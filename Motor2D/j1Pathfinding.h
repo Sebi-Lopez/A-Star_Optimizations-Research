@@ -1,0 +1,158 @@
+#ifndef __j1PATHFINDING_H__
+#define __j1PATHFINDING_H__
+
+#include "j1Module.h"
+#include "p2Point.h"
+
+#include <list>
+#include <vector>
+#define DEFAULT_PATH_LENGTH 50
+#define INVALID_WALK_CODE 255
+
+// --------------------------------------------------
+// Recommended reading:
+// Intro: http://www.raywenderlich.com/4946/introduction-to-a-pathfinding
+// Details: http://theory.stanford.edu/~amitp/GameProgramming/
+// --------------------------------------------------
+
+enum class PathState {
+	Found,
+	Searching,
+	Unavailable,
+	MAX
+};
+
+enum class Direction {
+	N,
+	NE,
+	E,
+	SE,
+	S,
+	SW,
+	W,
+	NW,
+	NONE
+};
+
+// forward declaration
+struct PathList;
+struct SDL_Texture; 
+// ---------------------------------------------------------------------
+// Pathnode: Helper struct to represent a node in the path creation
+// ---------------------------------------------------------------------
+struct PathNode
+{
+	// Convenient constructors
+	PathNode();
+	PathNode(int g, int h, const iPoint& pos, const PathNode* parent, const iPoint& direction = iPoint(0,0), bool isDiagonal = false);
+	PathNode(const PathNode& node);
+
+	// Fills a list (PathList) of all valid adjacent pathnodes
+	uint FindWalkableAdjacents(PathList& list_to_fill) const;
+
+	// Calculates this tile score
+	int Score() const;
+	// Calculate the F for a specific destination tile
+	int CalculateF(const iPoint& destination);
+
+	// -----------
+	int g;
+	int h;
+	iPoint pos;
+	iPoint direction;
+	const PathNode* parent; // needed to reconstruct the path in the end
+	bool isDiagonal; 
+};
+
+// ---------------------------------------------------------------------
+// Helper struct to include a list of path nodes
+// ---------------------------------------------------------------------
+struct PathList
+{
+	// Looks for a node in this list and returns it's list node or NULL
+	const PathNode* Find(const iPoint& point) const;
+
+	// Returns the Pathnode with lowest score in this list or NULL if empty
+	const PathNode* GetNodeLowestScore() const;
+
+	// -----------
+	// The list itself, note they are not pointers!
+	std::list<PathNode> pathNodeList;
+};
+
+class j1PathFinding : public j1Module
+{
+public:
+
+	j1PathFinding();
+
+	// Destructor
+	~j1PathFinding();
+
+	bool Start() override; 
+
+	bool PostUpdate() override;
+
+
+	// Called before quitting
+	bool CleanUp();
+
+	// Sets up the walkability map
+	void SetMap(uint width, uint height, uchar* data);
+
+	// Main function to request a path from A to B
+	int CreatePath(const iPoint& origin, const iPoint& destination);
+
+	PathState StartAStar(const iPoint& origin, const iPoint& destination);
+	PathState CycleAStar();
+
+	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
+	PathState CycleJPS();
+
+	void HorizontalJump(const PathNode& node); 
+	void VerticalJump(const PathNode& node);
+	void DiagonalJump(const PathNode& node);
+
+	PathNode UltraJump(const PathNode& node);
+
+	bool CheckForcedNeighboursHor(const iPoint& pos, const iPoint& direction); 
+	bool CheckForcedNeighboursVer(const iPoint& pos, const iPoint& direction);
+	bool CheckForcedNeighboursDiag(const iPoint& pos, const iPoint& direction);
+
+	// To request all tiles involved in the last generated path
+	const std::vector<iPoint>* GetLastPath() const;
+
+	// Utility: return true if pos is inside the map boundaries
+	bool CheckBoundaries(const iPoint& pos) const;
+
+	// Utility: returns true is the tile is walkable
+	bool IsWalkable(const iPoint& pos) const;
+
+	// Utility: return the walkability value of a tile
+	uchar GetTileAt(const iPoint& pos) const;
+
+private:
+
+	PathList open;
+	PathList closed;
+	// size of the map
+	uint width;
+	uint height;
+	// all map walkability values [0..255]
+	uchar* map = nullptr;
+	// we store the created path here
+	std::vector<iPoint> last_path;
+
+	bool initialized = false; 
+	iPoint goal = { -1, -1};
+	iPoint origin = { -1, -1 };
+	PathState state = PathState::MAX;
+
+	SDL_Texture* debugClosed = nullptr; 
+	SDL_Texture* debugOpen = nullptr; 
+	SDL_Texture* debugPath = nullptr;
+
+};
+
+
+#endif // __j1PATHFINDING_H__
