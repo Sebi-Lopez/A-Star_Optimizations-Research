@@ -109,11 +109,15 @@ public:
 	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
 	PathState CycleJPS();
 
-	void HorizontalJump(const PathNode& node); 
-	void VerticalJump(const PathNode& node);
-	void DiagonalJump(const PathNode& node);
+	bool HorizontalJump(const PathNode& node); 
+	bool VerticalJump(const PathNode& node);
+	bool DiagonalJump(const PathNode& node);
 
-	PathNode UltraJump(const PathNode& node);
+	PathNode* HorizontalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
+	PathNode* VerticalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
+	PathNode* DiagonalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
+
+	PathList* UltraJump(const iPoint& position, const iPoint& direction, const PathNode* parent);
 
 	bool CheckForcedNeighboursHor(const iPoint& pos, const iPoint& direction); 
 	bool CheckForcedNeighboursVer(const iPoint& pos, const iPoint& direction);
