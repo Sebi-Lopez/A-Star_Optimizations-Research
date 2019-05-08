@@ -59,6 +59,26 @@ void j1Map::Draw()
 			}
 		}
 	}
+
+	if (debugDraw)
+		DebugDraw(); 
+}
+
+void j1Map::DebugDraw()
+{
+	for (int x = 0; x < data.height + 1; ++x)
+	{
+		iPoint startPoint = MapToWorld(0, x);
+		iPoint finalPoint = MapToWorld(data.width, x);
+		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
+	}
+	// parallel to y
+	for (int j = 1; j < data.width + 1; ++j)
+	{
+		iPoint startPoint = MapToWorld(j, 0);
+		iPoint finalPoint = MapToWorld(j, data.height);
+		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
+	}
 }
 
 int Properties::Get(const char* value, int default_value) const

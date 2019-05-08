@@ -111,6 +111,7 @@ public:
 
 	// Called each loop iteration
 	void Draw();
+	void DebugDraw(); 
 
 	// Called before quitting
 	bool CleanUp();
@@ -141,6 +142,7 @@ private:
 	pugi::xml_document	map_file;
 	p2SString			folder;
 	bool				map_loaded;
+	bool				debugDraw = true;
 };
 
 #endif // __j1MAP_H__

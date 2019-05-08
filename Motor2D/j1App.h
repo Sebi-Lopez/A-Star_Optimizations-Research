@@ -46,10 +46,6 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
-	void LoadGame(const char* file);
-	void SaveGame(const char* file) const;
-	void GetSaveGames(p2List<p2SString>& list_to_fill) const;
-
 private:
 
 	// Load config file
@@ -70,21 +66,17 @@ private:
 	// Call modules after each loop iteration
 	bool PostUpdate();
 
-	// Load / Save
-	bool LoadGameNow();
-	bool SavegameNow() const;
-
 public:
 
 	// Modules
-	j1Window*			win;
-	j1Input*			input;
-	j1Render*			render;
-	j1Textures*			tex;
-	j1Audio*			audio;
-	j1Scene*			scene;
-	j1Map*				map;
-	j1PathFinding*		pathfinding;
+	j1Window*			win = nullptr;
+	j1Input*			input = nullptr;
+	j1Render*			render = nullptr;
+	j1Textures*			tex = nullptr;
+	j1Audio*			audio = nullptr;
+	j1Scene*			scene = nullptr;
+	j1Map*				map = nullptr;
+	j1PathFinding*		pathfinding = nullptr;
 
 private:
 
@@ -96,11 +88,6 @@ private:
 
 	p2SString			title;
 	p2SString			organization;
-
-	mutable bool		want_to_save;
-	bool				want_to_load;
-	p2SString			load_game;
-	mutable p2SString	save_game;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
