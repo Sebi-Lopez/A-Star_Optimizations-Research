@@ -93,6 +93,7 @@ public:
 
 	bool PostUpdate() override;
 
+	void DebugDraw(); 
 
 	// Called before quitting
 	bool CleanUp();
@@ -151,11 +152,6 @@ private:
 	iPoint goal = { -1, -1};
 	iPoint origin = { -1, -1 };
 	PathState state = PathState::MAX;
-
-	SDL_Texture* debugClosed = nullptr; 
-	SDL_Texture* debugOpen = nullptr; 
-	SDL_Texture* debugPath = nullptr;
-
 };
 
 

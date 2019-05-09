@@ -19,39 +19,43 @@ j1PathFinding::~j1PathFinding()
 
 bool j1PathFinding::Start()
 {
-	debugPath = App->tex->Load("maps/debugTex2.png");
 	return true;
 }
 
 bool j1PathFinding::PostUpdate()
 {
+	DebugDraw(); 
+
+	return true;
+}
+
+void j1PathFinding::DebugDraw()
+{
 	iPoint pos = { 0,0 };
+
+	// Draw Open Queue
 	std::list<PathNode>::iterator iterator = open.pathNodeList.begin();
 	for (iterator; iterator != open.pathNodeList.end(); iterator++)
 	{
-		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);		// X + 1, Same problem with map
-		//App->render->Blit(debugPath, pos.x, pos.y);
+		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
 		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 255, 0, 255);
 	}
 
+	// Draw Closed Queue
 	iterator = closed.pathNodeList.begin();
 	for (iterator; iterator != closed.pathNodeList.end(); iterator++)
 	{
-		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);		// X + 1, Same problem with map
-		//App->render->Blit(debugPath, pos.x, pos.y);
+		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
 		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 0, 255, 100);
 	}
 
+	// Draw Start Point
 	pos = App->map->MapToWorld(origin.x, origin.y);
-	//App->render->Blit(debugPath, pos.x, pos.y);
 	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 0, 255, 255);
 
-
+	// Draw Goal
 	pos = App->map->MapToWorld(goal.x, goal.y);
-	//App->render->Blit(debugPath, pos.x, pos.y);
 	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 255, 0, 0, 255);
-
-	return true;
 }
 
 // Called before quitting
