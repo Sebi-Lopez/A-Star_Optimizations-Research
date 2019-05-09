@@ -14,6 +14,7 @@ class j1Audio;
 class j1Scene;
 class j1Map;
 class j1PathFinding;
+class ObjectFactory; 
 
 class j1App
 {
@@ -77,6 +78,7 @@ public:
 	j1Scene*			scene = nullptr;
 	j1Map*				map = nullptr;
 	j1PathFinding*		pathfinding = nullptr;
+	ObjectFactory*		objectFactory = nullptr; 
 
 private:
 
