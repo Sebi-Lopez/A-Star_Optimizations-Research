@@ -54,6 +54,7 @@ bool j1Scene::PreUpdate()
 	// debug pathfing ------------------
 	static iPoint origin;
 	static bool origin_selected = false;
+	static bool erasing = false; 
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -74,12 +75,30 @@ bool j1Scene::PreUpdate()
 		}
 	}
 
+	// Changes Walkability Map - Needs Revision
+	// ------------------------------------------
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		if (!App->pathfinding->IsWalkable(tileMouse))
+		{
+			erasing = true;
+			LOG("Erasing enabled");
+		}
+		else
+		{
+			erasing = false;
+			LOG("Erasing disabled");
+		}
+	}
+
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
-		
-		App->pathfinding->SwapValue(App->pathfinding->GetIndexAt(tileMouse));
-		
+		if (erasing)
+			App->pathfinding->DeactivatePoint(App->pathfinding->GetIndexAt(tileMouse)); 
+		else App->pathfinding->ActivatePoint(App->pathfinding->GetIndexAt(tileMouse));
 	}
+
+	// ------------------------------------------
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{

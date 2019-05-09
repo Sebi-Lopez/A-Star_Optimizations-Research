@@ -127,6 +127,18 @@ void j1PathFinding::SwapValue(int id)
 	}
 }
 
+void j1PathFinding::ActivatePoint(int id)
+{
+	if (map[id] != 0)
+		map[id] = 0; 
+}
+
+void j1PathFinding::DeactivatePoint(int id)
+{
+	if (map[id] == 0)
+		map[id] = 1; 
+}
+
 // To request all tiles involved in the last generated path
 const std::vector<iPoint>* j1PathFinding::GetLastPath() const
 {
