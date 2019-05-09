@@ -127,16 +127,24 @@ void j1PathFinding::SwapValue(int id)
 	}
 }
 
-void j1PathFinding::ActivatePoint(int id)
+void j1PathFinding::ActivateTile(const iPoint& tile)
 {
-	if (map[id] != 0)
-		map[id] = 0; 
+	if (CheckBoundaries(tile))
+	{
+		int id = GetIndexAt(tile);
+		if (map[id] != 0)
+			map[id] = 0; 
+	}
 }
 
-void j1PathFinding::DeactivatePoint(int id)
+void j1PathFinding::DeactivateTile(const iPoint& tile)
 {
-	if (map[id] == 0)
-		map[id] = 1; 
+	if (CheckBoundaries(tile))
+	{
+		int id = GetIndexAt(tile); 
+		if (map[id] == 0)
+			map[id] = 1; 		
+	}
 }
 
 // To request all tiles involved in the last generated path

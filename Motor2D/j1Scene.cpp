@@ -51,7 +51,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	// debug pathfing ------------------
+	// Debug Pathfinding ------------------
 	static iPoint origin;
 	static bool origin_selected = false;
 	static bool erasing = false; 
@@ -82,20 +82,20 @@ bool j1Scene::PreUpdate()
 		if (!App->pathfinding->IsWalkable(tileMouse))
 		{
 			erasing = true;
-			LOG("Erasing enabled");
+			//LOG("Erasing enabled");
 		}
 		else
 		{
 			erasing = false;
-			LOG("Erasing disabled");
+			//LOG("Erasing disabled");
 		}
 	}
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		if (erasing)
-			App->pathfinding->DeactivatePoint(App->pathfinding->GetIndexAt(tileMouse)); 
-		else App->pathfinding->ActivatePoint(App->pathfinding->GetIndexAt(tileMouse));
+			App->pathfinding->DeactivateTile(tileMouse); 
+		else App->pathfinding->ActivateTile(tileMouse);
 	}
 
 	// ------------------------------------------

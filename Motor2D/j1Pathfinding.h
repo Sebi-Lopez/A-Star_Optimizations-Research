@@ -149,8 +149,8 @@ public:
 	
 	// Swaps Walkability Map Value
 	void SwapValue(int id); // True -> False / False -> True
-	void ActivatePoint(int id); 
-	void DeactivatePoint(int id);
+	void ActivateTile(const iPoint& tile); 
+	void DeactivateTile(const iPoint& tile);
 
 
 public: 	
