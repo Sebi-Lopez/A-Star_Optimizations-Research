@@ -51,28 +51,54 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	// debug pathfing ------------------
+	// Debug Pathfinding ------------------
 	static iPoint origin;
 	static bool origin_selected = false;
+	static bool erasing = false; 
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y);
+	iPoint tileMouse = App->render->ScreenToWorld(x, y);
+	tileMouse = App->map->WorldToMap(tileMouse.x, tileMouse.y);
 
-	if(App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
 		if(origin_selected == true)
 		{
-			App->pathfinding->StartJPS(origin, p);
+			App->pathfinding->StartJPS(origin, tileMouse);
 			origin_selected = false;
 		}
 		else
 		{
-			origin = p;
+			origin = tileMouse;
 			origin_selected = true;
 		}
 	}
+
+	// Changes Walkability Map - Needs Revision
+	// ------------------------------------------
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		if (!App->pathfinding->IsWalkable(tileMouse))
+		{
+			erasing = true;
+			//LOG("Erasing enabled");
+		}
+		else
+		{
+			erasing = false;
+			//LOG("Erasing disabled");
+		}
+	}
+
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	{
+		if (erasing)
+			App->pathfinding->DeactivateTile(tileMouse); 
+		else App->pathfinding->ActivateTile(tileMouse);
+	}
+
+	// ------------------------------------------
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{

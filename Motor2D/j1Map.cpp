@@ -4,6 +4,7 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Map.h"
+#include "j1Pathfinding.h"
 #include <math.h>
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
@@ -66,6 +67,19 @@ void j1Map::Draw()
 
 void j1Map::DebugDraw()
 {
+	for (uint i = 0; i < data.width * data.height; ++i)
+	{
+		if (App->pathfinding->map[i] == 0)
+		{
+			SDL_Rect rect;
+			rect.x = App->pathfinding->GetPosFromWalkability(i).x;
+			rect.y = App->pathfinding->GetPosFromWalkability(i).y;
+			rect.w = App->map->data.tile_width;
+			rect.h = App->map->data.tile_height;
+			App->render->DrawQuad(rect, 0, 240, 255, 255);
+		}
+	}
+
 	for (int x = 0; x < data.height + 1; ++x)
 	{
 		iPoint startPoint = MapToWorld(0, x);
@@ -79,6 +93,8 @@ void j1Map::DebugDraw()
 		iPoint finalPoint = MapToWorld(j, data.height);
 		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
 	}
+
+	
 }
 
 int Properties::Get(const char* value, int default_value) const

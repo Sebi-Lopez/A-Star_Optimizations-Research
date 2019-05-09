@@ -812,7 +812,7 @@
  </layer>
  <layer id="4" name="Collisions" width="32" height="25">
   <properties>
-   <property name="Draw" type="bool" value="true"/>
+   <property name="Draw" type="bool" value="false"/>
    <property name="Navigation" type="bool" value="true"/>
   </properties>
   <data>

@@ -102,6 +102,55 @@ uchar j1PathFinding::GetTileAt(const iPoint& pos) const
 	return INVALID_WALK_CODE;
 }
 
+uint j1PathFinding::GetIndexAt(const iPoint & pos) const
+{
+	return uint(pos.y * width + pos.x);
+}
+
+iPoint j1PathFinding::GetTileFromWalkability(int id) const
+{
+	return iPoint((id % width), (int) (id / width));
+}
+
+iPoint j1PathFinding::GetPosFromWalkability(int id) const
+{
+	int x = (id % width);
+	int y = (int)(id / width);
+
+	iPoint ret = App->map->MapToWorld(x, y);
+	return ret;
+}
+
+void j1PathFinding::SwapValue(int id)
+{
+	if (id < width * height)
+	{
+		if (map[id] == 0)
+			map[id] = 1; 
+		else map[id] = 0; 
+	}
+}
+
+void j1PathFinding::ActivateTile(const iPoint& tile)
+{
+	if (CheckBoundaries(tile))
+	{
+		int id = GetIndexAt(tile);
+		if (map[id] != 0)
+			map[id] = 0; 
+	}
+}
+
+void j1PathFinding::DeactivateTile(const iPoint& tile)
+{
+	if (CheckBoundaries(tile))
+	{
+		int id = GetIndexAt(tile); 
+		if (map[id] == 0)
+			map[id] = 1; 		
+	}
+}
+
 // To request all tiles involved in the last generated path
 const std::vector<iPoint>* j1PathFinding::GetLastPath() const
 {
