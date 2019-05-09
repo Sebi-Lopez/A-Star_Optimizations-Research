@@ -97,9 +97,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Sets up the walkability map
-	void SetMap(uint width, uint height, uchar* data);
-
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination);
 
@@ -126,24 +123,33 @@ public:
 	// To request all tiles involved in the last generated path
 	const std::vector<iPoint>* GetLastPath() const;
 
+
+	// Walkability Map Functions
+
+	// Sets up the walkability map
+	void SetMap(uint width, uint height, uchar* data);
+	
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
-
+	
 	// Utility: returns true is the tile is walkable
 	bool IsWalkable(const iPoint& pos) const;
-
+	
 	// Utility: return the walkability value of a tile
 	uchar GetTileAt(const iPoint& pos) const;
-
+	
 	// Returns index from walkability Map from a Tile Pos on map
 	uint GetIndexAt(const iPoint& pos) const; 
-
+	
 	// Returns the Tile from walkability Map from ID
 	iPoint GetTileFromWalkability(int id) const; 
-
+	
 	// Returns the World Position from walkability Map from ID
 	iPoint GetPosFromWalkability(int id) const; 
 	
+	// Swaps Walkability Map Value
+	void SwapValue(int id); 
+
 
 public: 	
 	uchar* map = nullptr;

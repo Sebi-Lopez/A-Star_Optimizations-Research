@@ -57,21 +57,28 @@ bool j1Scene::PreUpdate()
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y);
+	iPoint tileMouse = App->render->ScreenToWorld(x, y);
+	tileMouse = App->map->WorldToMap(tileMouse.x, tileMouse.y);
 
-	if(App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
 		if(origin_selected == true)
 		{
-			App->pathfinding->StartJPS(origin, p);
+			App->pathfinding->StartJPS(origin, tileMouse);
 			origin_selected = false;
 		}
 		else
 		{
-			origin = p;
+			origin = tileMouse;
 			origin_selected = true;
 		}
+	}
+
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	{
+		
+		App->pathfinding->SwapValue(App->pathfinding->GetIndexAt(tileMouse));
+		
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)

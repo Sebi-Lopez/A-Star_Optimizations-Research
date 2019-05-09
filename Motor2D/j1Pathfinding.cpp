@@ -117,6 +117,16 @@ iPoint j1PathFinding::GetPosFromWalkability(int id) const
 	return ret;
 }
 
+void j1PathFinding::SwapValue(int id)
+{
+	if (id < width * height)
+	{
+		if (map[id] == 0)
+			map[id] = 1; 
+		else map[id] = 0; 
+	}
+}
+
 // To request all tiles involved in the last generated path
 const std::vector<iPoint>* j1PathFinding::GetLastPath() const
 {
