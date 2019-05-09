@@ -135,6 +135,19 @@ public:
 	// Utility: return the walkability value of a tile
 	uchar GetTileAt(const iPoint& pos) const;
 
+	// Returns index from walkability Map from a Tile Pos on map
+	uint GetIndexAt(const iPoint& pos) const; 
+
+	// Returns the Tile from walkability Map from ID
+	iPoint GetTileFromWalkability(int id) const; 
+
+	// Returns the World Position from walkability Map from ID
+	iPoint GetPosFromWalkability(int id) const; 
+	
+
+public: 	
+	uchar* map = nullptr;
+
 private:
 
 	PathList open;
@@ -143,7 +156,6 @@ private:
 	uint width;
 	uint height;
 	// all map walkability values [0..255]
-	uchar* map = nullptr;
 	// we store the created path here
 	std::vector<iPoint> last_path;
 
