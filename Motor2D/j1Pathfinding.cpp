@@ -642,7 +642,7 @@ PathState j1PathFinding::CycleJPS()
 			// Fill a list of all adjancent nodes
 			PathList neighbors;
 			//closed.pathNodeList.back().UniverSalJump(neighbors);
-			UniversalJump(*curr, neighbors);
+			UniversalJump(closed.pathNodeList.back(), neighbors);
 			// Iterate adjancent nodes:
 			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
