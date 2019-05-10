@@ -65,7 +65,7 @@ bool j1Scene::PreUpdate()
 	{
 		if(origin_selected == true)
 		{
-			App->pathfinding->CreatePath(origin, tileMouse);
+			App->pathfinding->StartJPS(origin, tileMouse);
 			origin_selected = false;
 		}
 		else
