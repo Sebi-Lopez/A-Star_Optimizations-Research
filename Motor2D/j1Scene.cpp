@@ -43,7 +43,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	debug_tex = App->tex->Load("maps/debugTex.png");
+	//debug_tex = App->tex->Load("maps/debugTex.png");
 
 	return true;
 }
@@ -65,7 +65,7 @@ bool j1Scene::PreUpdate()
 	{
 		if(origin_selected == true)
 		{
-			App->pathfinding->StartJPS(origin, tileMouse);
+			App->pathfinding->CreatePath(origin, tileMouse);
 			origin_selected = false;
 		}
 		else
@@ -122,6 +122,19 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= 1;
+	
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		App->win->SetScale(4);
+			
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		App->win->SetScale(3);
+
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		App->win->SetScale(2);
+
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		App->win->SetScale(1);
+
 
 	App->map->Draw();
 
@@ -146,15 +159,21 @@ bool j1Scene::Update(float dt)
 	p = App->map->WorldToMap(p.x, p.y);
 	p = App->map->MapToWorld(p.x, p.y);
 
-	App->render->Blit(debug_tex, p.x, p.y);
+	SDL_Rect rect; 
+	rect.x = p.x;
+	rect.y = p.y; 
+	rect.w = App->map->data.tile_width;
+	rect.h = App->map->data.tile_height;
+	App->render->DrawQuad(rect,255,0,255,255);
 
 	std::vector<iPoint> path = *App->pathfinding->GetLastPath();
 
 	for(uint i = 0; i < path.size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
+		App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 100,255);
 		//App->render->DrawQuad({ pos.x, pos.y + (int)(App->map->data.tile_height * 0.5F), 5, 5 }, 255, 0, 255, 175, true);
-		App->render->Blit(debug_tex, pos.x, pos.y);
+		//App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
 	return true;
