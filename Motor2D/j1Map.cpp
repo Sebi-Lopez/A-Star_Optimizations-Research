@@ -67,6 +67,7 @@ void j1Map::Draw()
 
 void j1Map::DebugDraw()
 {
+	// Draw WalkabilityMap
 	for (uint i = 0; i < data.width * data.height; ++i)
 	{
 		if (App->pathfinding->map[i] == 0)
@@ -80,13 +81,17 @@ void j1Map::DebugDraw()
 		}
 	}
 
+	// Draw Grid
+
+	// Horizontal
 	for (int x = 0; x < data.height + 1; ++x)
 	{
 		iPoint startPoint = MapToWorld(0, x);
 		iPoint finalPoint = MapToWorld(data.width, x);
 		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
 	}
-	// parallel to y
+
+	// Vertical
 	for (int j = 1; j < data.width + 1; ++j)
 	{
 		iPoint startPoint = MapToWorld(j, 0);
