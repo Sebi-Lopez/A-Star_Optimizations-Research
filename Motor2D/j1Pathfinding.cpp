@@ -6,7 +6,7 @@
 #include "j1Map.h"
 #include "j1Textures.h"
 
-j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH), width(0), height(0)
+j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(0), width(0), height(0)
 {
 	name.create("pathfinding");
 }
@@ -38,7 +38,7 @@ void j1PathFinding::DebugDraw()
 	for (iterator; iterator != open.pathNodeList.end(); iterator++)
 	{
 		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
-		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 255, 0, 255);
+		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 255, 0, 255);
 	}
 
 	// Draw Closed Queue
@@ -46,16 +46,16 @@ void j1PathFinding::DebugDraw()
 	for (iterator; iterator != closed.pathNodeList.end(); iterator++)
 	{
 		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
-		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 0, 255, 100);
+		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 0, 255, 100);
 	}
 
 	// Draw Start Point
 	pos = App->map->MapToWorld(origin.x, origin.y);
-	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 0, 0, 255, 255);
+	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 0, 255, 255);
 
 	// Draw Goal
 	pos = App->map->MapToWorld(goal.x, goal.y);
-	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_height, App->map->data.tile_height }, 255, 0, 0, 255);
+	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 255, 0, 0, 255);
 }
 
 // Called before quitting

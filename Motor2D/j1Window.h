@@ -29,6 +29,7 @@ public:
 
 	// Retrieve window scale
 	uint GetScale() const;
+	void SetScale(int scale); 
 
 public:
 	//The window we'll be rendering to
