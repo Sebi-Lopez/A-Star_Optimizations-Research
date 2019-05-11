@@ -2,6 +2,7 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
+#include "j1Timer.h"
 
 struct SDL_Texture;
 
@@ -33,7 +34,9 @@ public:
 	bool CleanUp();
 
 private:
-	//SDL_Texture* debug_tex = nullptr;
+	SDL_Texture* debug_tex = nullptr;
+	uint32 pathTime; 
+	bool usingJPS = true; 
 };
 
 #endif // __j1SCENE_H__

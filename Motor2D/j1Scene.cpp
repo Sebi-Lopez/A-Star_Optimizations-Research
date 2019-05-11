@@ -43,7 +43,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	//debug_tex = App->tex->Load("maps/debugTex.png");
+	debug_tex = App->tex->Load("maps/debugTex.png");
 
 	return true;
 }
@@ -55,17 +55,26 @@ bool j1Scene::PreUpdate()
 	static iPoint origin;
 	static bool origin_selected = false;
 	static bool erasing = false; 
+	j1Timer pathTimer;
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint tileMouse = App->render->ScreenToWorld(x, y);
 	tileMouse = App->map->WorldToMap(tileMouse.x, tileMouse.y);
 
+	// Ask for paths to Pathfinding 
+	// ------------------------------------------
 	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
 		if(origin_selected == true)
 		{
-			App->pathfinding->CreatePath(origin, tileMouse);
+			pathTimer.Start(); 
+			if(usingJPS)
+			App->pathfinding->CreatePathJPS(origin, tileMouse);
+			else 
+				App->pathfinding->CreatePath(origin, tileMouse);
+
+			pathTime = pathTimer.Read();
 			origin_selected = false;
 		}
 		else
@@ -75,20 +84,26 @@ bool j1Scene::PreUpdate()
 		}
 	}
 
-	// Changes Walkability Map - Needs Revision
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	{
+		App->pathfinding->CycleJPS();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		usingJPS = !usingJPS;
+	}
+	// ------------------------------------------
+
+
+	// Change walkability Map 
 	// ------------------------------------------
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
 		if (!App->pathfinding->IsWalkable(tileMouse))
-		{
 			erasing = true;
-			//LOG("Erasing enabled");
-		}
-		else
-		{
+		else			
 			erasing = false;
-			//LOG("Erasing disabled");
-		}
 	}
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
@@ -97,13 +112,9 @@ bool j1Scene::PreUpdate()
 			App->pathfinding->DeactivateTile(tileMouse); 
 		else App->pathfinding->ActivateTile(tileMouse);
 	}
-
 	// ------------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-	{
-		App->pathfinding->CycleJPS(); 
-	}
+	
 
 	return true;
 }
@@ -143,16 +154,15 @@ bool j1Scene::Update(float dt)
 	int x2 = x;
 	int y2 = y; 
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d WorldPos: %i,%i",
+	p2SString title("Map:%dx%d, Tile: %d,%d, Currently Using %s, Last Path ms: %i",
 					App->map->data.width, App->map->data.height,
-					App->map->data.tile_width, App->map->data.tile_height,
-					App->map->data.tilesets.count(),
 					map_coordinates.x, map_coordinates.y,
-					x2,y2);
+					usingJPS ? "JPS" : "A*", 
+					pathTime);
 
 	App->win->SetTitle(title.GetString());
 
-	// Debug pathfinding ------------------------------
+	// Debug path ------------------------------
 	//int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
@@ -171,9 +181,9 @@ bool j1Scene::Update(float dt)
 	for(uint i = 0; i < path.size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
-		App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 100,255);
+		//App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 255,255);
 		//App->render->DrawQuad({ pos.x, pos.y + (int)(App->map->data.tile_height * 0.5F), 5, 5 }, 255, 0, 255, 175, true);
-		//App->render->Blit(debug_tex, pos.x, pos.y);
+		App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
 	return true;

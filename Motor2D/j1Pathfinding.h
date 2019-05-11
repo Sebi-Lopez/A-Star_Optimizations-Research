@@ -54,6 +54,7 @@ struct PathNode
 	int Score() const;
 	// Calculate the F for a specific destination tile
 	int CalculateF(const iPoint& destination);
+	int CalculateFJPS(const iPoint& destination);
 
 	// -----------
 	int g;
@@ -71,6 +72,7 @@ struct PathList
 {
 	// Looks for a node in this list and returns it's list node or NULL
 	const PathNode* Find(const iPoint& point) const;
+	const PathNode* FindJPS(const iPoint& point, const iPoint& direction) const;
 
 	// Returns the Pathnode with lowest score in this list or NULL if empty
 	const PathNode* GetNodeLowestScore() const;
@@ -94,12 +96,13 @@ public:
 	bool PostUpdate() override;
 
 	void DebugDraw(); 
-
+	void DrawGrid(); 
 	// Called before quitting
 	bool CleanUp();
 
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination);
+	int CreatePathJPS(const iPoint& origin, const iPoint& destination);
 
 	PathState StartAStar(const iPoint& origin, const iPoint& destination);
 	PathState CycleAStar();
@@ -107,19 +110,11 @@ public:
 	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
 	PathState CycleJPS();
 
-	bool HorizontalJump(const PathNode& node); 
-	bool VerticalJump(const PathNode& node);
-	bool DiagonalJump(const PathNode& node);
+	void HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent); 
+	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
+	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
-	PathNode* HorizontalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-	PathNode* VerticalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-	PathNode* DiagonalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-
-	PathList* UltraJump(const iPoint& position, const iPoint& direction, const PathNode* parent);
-
-	bool CheckForcedNeighboursHor(const iPoint& pos, const iPoint& direction); 
-	bool CheckForcedNeighboursVer(const iPoint& pos, const iPoint& direction);
-	bool CheckForcedNeighboursDiag(const iPoint& pos, const iPoint& direction);
+	void JumpFilter(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
 	// To request all tiles involved in the last generated path
 	const std::vector<iPoint>* GetLastPath() const;
@@ -161,6 +156,8 @@ private:
 
 	PathList open;
 	PathList closed;
+	PathList visited; 
+
 	// size of the map
 	uint width;
 	uint height;
