@@ -11,12 +11,12 @@ It's for this reason we are going to find an alternative to this algorithm, to g
 # Alternatives
 
 ## Parallel Search
-
-
 ## Potential Fields
 ## Lifelong Planning A*
 ## Theta*
 ## ARA* (Anytime Repairing A*)
+## HPA* 
+## IDA* 
 
 # Selected Approach: JPS
 ## Description
