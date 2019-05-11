@@ -84,27 +84,7 @@ void j1Map::DebugDraw()
 			rect.h = App->map->data.tile_height;
 			App->render->DrawQuad(rect, 0, 240, 255, 255);
 		}
-	}
-
-	// Draw Grid
-
-	// Horizontal
-	for (int x = 0; x < data.height + 1; ++x)
-	{
-		iPoint startPoint = MapToWorld(0, x);
-		iPoint finalPoint = MapToWorld(data.width, x);
-		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
-	}
-
-	// Vertical
-	for (int j = 1; j < data.width + 1; ++j)
-	{
-		iPoint startPoint = MapToWorld(j, 0);
-		iPoint finalPoint = MapToWorld(j, data.height);
-		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
-	}
-
-	
+	}	
 }
 
 int Properties::Get(const char* value, int default_value) const

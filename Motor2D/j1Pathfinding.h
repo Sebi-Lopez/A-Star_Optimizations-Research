@@ -96,7 +96,7 @@ public:
 	bool PostUpdate() override;
 
 	void DebugDraw(); 
-
+	void DrawGrid(); 
 	// Called before quitting
 	bool CleanUp();
 
@@ -114,16 +114,7 @@ public:
 	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
-	void UniversalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
-	PathNode* HorizontalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-	PathNode* VerticalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-	PathNode* DiagonalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
-
-	PathList* UltraJump(const iPoint& position, const iPoint& direction, const PathNode* parent);
-
-	bool CheckForcedNeighboursHor(const iPoint& pos, const iPoint& direction); 
-	bool CheckForcedNeighboursVer(const iPoint& pos, const iPoint& direction);
-	bool CheckForcedNeighboursDiag(const iPoint& pos, const iPoint& direction);
+	void JumpFilter(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
 	// To request all tiles involved in the last generated path
 	const std::vector<iPoint>* GetLastPath() const;
