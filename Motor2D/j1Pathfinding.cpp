@@ -523,7 +523,7 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 					continue;
 				}
 
-				(*iterator).CalculateF(goal);
+				(*iterator).CalculateFJPS(goal);
 				// If it is already in the open list, check if it is a better path (compare G)
 				if (open.FindJPS((*iterator).pos, (*iterator).direction) != nullptr) {
 
@@ -756,7 +756,7 @@ PathState j1PathFinding::CycleJPS()
 					continue;
 				}
 
-				(*iterator).CalculateF(goal);
+				(*iterator).CalculateFJPS(goal);
 				// If it is already in the open list, check if it is a better path (compare G)
 				if (open.FindJPS((*iterator).pos, (*iterator).direction) != nullptr) {
 
