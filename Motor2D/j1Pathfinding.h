@@ -102,6 +102,7 @@ public:
 
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination);
+	int CreatePathJPS(const iPoint& origin, const iPoint& destination);
 
 	PathState StartAStar(const iPoint& origin, const iPoint& destination);
 	PathState CycleAStar();
@@ -109,11 +110,11 @@ public:
 	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
 	PathState CycleJPS();
 
-	void HorizontalJump(const PathNode& node, PathList& listToFill); 
-	void VerticalJump(const PathNode& node, PathList& listToFill);
-	void DiagonalJump(const PathNode& node, PathList& listToFill);
+	void HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent); 
+	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
+	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
-	void UniversalJump(const PathNode& node, PathList& listToFill); 
+	void UniversalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 	PathNode* HorizontalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
 	PathNode* VerticalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);
 	PathNode* DiagonalJumpPtr(const iPoint& position, const iPoint& direction, const PathNode* parent);

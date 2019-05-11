@@ -43,7 +43,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	//debug_tex = App->tex->Load("maps/debugTex.png");
+	debug_tex = App->tex->Load("maps/debugTex.png");
 
 	return true;
 }
@@ -171,9 +171,9 @@ bool j1Scene::Update(float dt)
 	for(uint i = 0; i < path.size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
-		App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 100,255);
+		//App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 255,255);
 		//App->render->DrawQuad({ pos.x, pos.y + (int)(App->map->data.tile_height * 0.5F), 5, 5 }, 255, 0, 255, 175, true);
-		//App->render->Blit(debug_tex, pos.x, pos.y);
+		App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
 	return true;
