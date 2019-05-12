@@ -65,14 +65,6 @@ His creator, Daniel Harabor, has made an incredible optimization of the A* by ex
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png" width="340">
 </p>
 
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Symmetrt.PNG" width="340">
-</p>
-
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/symmetry3.PNG" width="340">
-</p>
-
 When talking about symmetric paths, the A* algorithm is forced to explore every node adjacent to the optimal path. In the past picture, depending on how we handle the situation of having two nodes with the same score, A* might even explore the whole map before reaching the destination. 
 
 
