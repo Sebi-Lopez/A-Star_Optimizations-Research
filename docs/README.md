@@ -124,22 +124,27 @@ These conditions of encountering forced neighbours are applied in a very similar
 
 ### Diagonal Jumps 
 
-
+<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG" width="200">
 </p>
 
+
+<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample02.PNG" width="200">
 </p>
 
 
+<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample03.PNG" width="200">
 </p>
 
 
+<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample04.PNG" width="200">
 </p>
 
 
+<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG" width="200">
 </p>
 
