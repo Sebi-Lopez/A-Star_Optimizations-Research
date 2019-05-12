@@ -54,7 +54,7 @@ struct PathNode
 	int Score() const;
 	// Calculate the F for a specific destination tile
 	int CalculateF(const iPoint& destination);
-	int CalculateFJPS(const iPoint& destination);
+	int CalculateF_JPS(const iPoint& destination);
 
 	// -----------
 	int g;
@@ -165,10 +165,11 @@ private:
 	// we store the created path here
 	std::vector<iPoint> last_path;
 
-	bool initialized = false; 
 	iPoint goal = { -1, -1};
 	iPoint origin = { -1, -1 };
 	PathState state = PathState::MAX;
+
+	bool debug = false; 
 };
 
 

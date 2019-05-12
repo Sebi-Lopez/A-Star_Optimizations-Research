@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include "j1Textures.h"
 #include "j1Timer.h"
+#include "j1Input.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(0), width(0), height(0)
 {
@@ -25,38 +26,13 @@ bool j1PathFinding::Start()
 
 bool j1PathFinding::PostUpdate()
 {
-	DebugDraw(); 
+	if(App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+		debug = !debug; 
 
-	return true;
-}
-
-void j1PathFinding::DebugDraw()
-{
+	if (debug)
+		DebugDraw(); 
+	
 	iPoint pos = { 0,0 };
-
-	// Draw Open Queue
-	std::list<PathNode>::iterator iterator = open.pathNodeList.begin();
-	for (iterator; iterator != open.pathNodeList.end(); iterator++)
-	{
-		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
-		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 255, 0, 255);
-	}
-
-	// Draw Closed Queue
-	iterator = closed.pathNodeList.begin();
-	for (iterator; iterator != closed.pathNodeList.end(); iterator++)
-	{
-		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
-		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 0, 255, 100);
-	}
-
-	// Draw Visited Queue
-	iterator = visited.pathNodeList.begin();
-	for (iterator; iterator != visited.pathNodeList.end(); iterator++)
-	{
-		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
-		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 150, 50, 255, 100);
-	}
 	// Draw Start Point
 	pos = App->map->MapToWorld(origin.x, origin.y);
 	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 0, 255, 255);
@@ -65,14 +41,47 @@ void j1PathFinding::DebugDraw()
 	pos = App->map->MapToWorld(goal.x, goal.y);
 	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 255, 0, 0, 255);
 
-	DrawGrid(); 
+	DrawGrid();
+
+	return true;
+}
+
+void j1PathFinding::DebugDraw()
+{
+	iPoint pos = { 0,0 };
+
+	std::list<PathNode>::iterator iterator = visited.pathNodeList.begin();
+
+	// Draw Visited Queue First (it stays on the bottom layer)
+	for (iterator; iterator != visited.pathNodeList.end(); iterator++)
+	{
+		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
+		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 150, 50, 255, 100);
+	}
+
+	// Draw Open Queue
+
+	iterator = open.pathNodeList.begin();
+	for (iterator; iterator != open.pathNodeList.end(); iterator++)
+	{
+		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
+		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 255, 0, 255);
+	}
+	// Draw Closed Queue
+
+	iterator = closed.pathNodeList.begin();
+	for (iterator; iterator != closed.pathNodeList.end(); iterator++)
+	{
+		pos = App->map->MapToWorld((*iterator).pos.x, (*iterator).pos.y);
+		App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 255, 0, 0, 255);
+	}
+
+	
+
 }
 
 void j1PathFinding::DrawGrid()
 {
-	j1Timer timer;
-	timer.Start();
-
 	// Horizontal	
 	for (int x = 0; x < App->map->data.height + 1; ++x)
 	{
@@ -88,7 +97,6 @@ void j1PathFinding::DrawGrid()
 		iPoint finalPoint = App->map->MapToWorld(j, App->map->data.height);
 		App->render->DrawLine(startPoint.x, startPoint.y, finalPoint.x, finalPoint.y, 0, 0, 0);
 	}
-	timer.Read();
 }
 
 // Called before quitting
@@ -324,22 +332,15 @@ int PathNode::CalculateF(const iPoint& destination)
 		g = parent->g + 1.0f;
 
 	h = pos.DistanceManhattan(destination);
-	/*g = parent->g + 1;
-	h = pos.DistanceTo(destination);*/
 
 	return g + h;
 }
 
-int PathNode::CalculateFJPS(const iPoint & destination)
+int PathNode::CalculateF_JPS(const iPoint & destination)
 {
-	if (isDiagonal)
-		g = parent->g + parent->pos.DistanceManhattan(destination);
-	else
-		g = parent->g + parent->pos.DistanceManhattan(destination);
+	g = parent->g + parent->pos.DistanceManhattan(destination);
 
 	h = pos.DistanceManhattan(destination);
-	/*g = parent->g + 1;
-	h = pos.DistanceTo(destination);*/
 
 	return g + h;
 }
@@ -359,10 +360,6 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 	{
 		return -1;
 	}
-
-
-	//PathList open;
-	//PathList closed;
 
 	PathNode originNode(0, origin.DistanceTo(destination), origin, nullptr);
 	open.pathNodeList.push_back(originNode);
@@ -464,29 +461,27 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 	{
 		return -1;
 	}
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
 
+	// Horizontal Cases
+
+	// East
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
 	// West
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
+	
 	// VERTICAL CASES 
 	// North
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
-
 	// South
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
 
-
 	// DIAGONAL CASES 
-
 	// North - East
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
-
 	// South - East
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
-
 	// South - West
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
-
 	// North - West
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
@@ -519,26 +514,17 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 
 			last_path.push_back(closed.pathNodeList.front().pos);
 
-			closed.pathNodeList.clear();
-			open.pathNodeList.clear();
-			visited.pathNodeList.clear();
-			// Flip() the path when you are finish
+			// Flip the path 
 			std::reverse(last_path.begin(), last_path.end());
 
-			for (uint i = 0; i < last_path.size(); ++i)
-			{
-				LOG("x = %i, y = %i", last_path[i].x, last_path[i].y);
-			}
-
-
 			return last_path.size();
-
 		}
 		else {
 			// Fill a list of all adjancent nodes
 			PathList neighbors;
-			//closed.pathNodeList.back().UniverSalJump(neighbors);
+
 			JumpFilter(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+
 			// Iterate adjancent nodes:
 			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
@@ -549,7 +535,7 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 					continue;
 				}
 
-				(*iterator).CalculateFJPS(goal);
+				(*iterator).CalculateF_JPS(goal);
 				// If it is already in the open list, check if it is a better path (compare G)
 				if (open.FindJPS((*iterator).pos, (*iterator).direction) != nullptr) {
 
@@ -594,7 +580,6 @@ PathState j1PathFinding::CycleAStar()
 {
 	if (open.pathNodeList.empty() == false)
 	{
-
 		// Move the lowest score cell from open list to the closed list
 		PathNode* curr = (PathNode*)open.GetNodeLowestScore();
 		closed.pathNodeList.push_back(*curr);
@@ -622,13 +607,8 @@ PathState j1PathFinding::CycleAStar()
 
 			last_path.push_back(closed.pathNodeList.front().pos);
 
-			// Flip() the path when you are finish
+			// Flip the path
 			std::reverse(last_path.begin(), last_path.end());
-
-			for (uint i = 0; i < last_path.size(); ++i)
-			{
-				LOG("x = %i, y = %i", last_path[i].x, last_path[i].y);
-			}
 
 			return PathState::Found;
 
@@ -699,7 +679,6 @@ PathState j1PathFinding::StartJPS(const iPoint & origin, const iPoint & destinat
 	// South
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
 
-
 	// DIAGONAL CASES 
 	// North - East
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
@@ -745,17 +724,8 @@ PathState j1PathFinding::CycleJPS()
 
 			last_path.push_back(closed.pathNodeList.front().pos);
 
-			closed.pathNodeList.clear(); 
-			open.pathNodeList.clear(); 
-			visited.pathNodeList.clear();
-			// Flip() the path when you are finish
+			// Flip the path 
 			std::reverse(last_path.begin(), last_path.end());
-
-			for (uint i = 0; i < last_path.size(); ++i)
-			{
-				LOG("x = %i, y = %i", last_path[i].x, last_path[i].y);
-			}
-
 
 			return PathState::Found;
 
@@ -763,8 +733,9 @@ PathState j1PathFinding::CycleJPS()
 		else {
 			// Fill a list of all adjancent nodes
 			PathList neighbors;
-			//closed.pathNodeList.back().UniverSalJump(neighbors);
+
 			JumpFilter(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+			
 			// Iterate adjancent nodes:
 			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
@@ -775,7 +746,7 @@ PathState j1PathFinding::CycleJPS()
 					continue;
 				}
 
-				(*iterator).CalculateFJPS(goal);
+				(*iterator).CalculateF_JPS(goal);
 				// If it is already in the open list, check if it is a better path (compare G)
 				if (open.FindJPS((*iterator).pos, (*iterator).direction) != nullptr) {
 
@@ -807,8 +778,6 @@ void j1PathFinding::JumpFilter(const PathNode & node, PathList & listToFill, con
 
 void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent)
 {
-	bool gotJumpPoint = false;
-
 	iPoint newPos = node.pos + node.direction;
 	int horizontalDir = node.direction.x;
 
@@ -830,18 +799,14 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 	if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 1 }));
-		gotJumpPoint = true;
 	}
 
 	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, -1 }));
-		gotJumpPoint = true;
 	}
 
-	
-
-	if (gotJumpPoint)
+	if (listToFill.pathNodeList.empty() == false)
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
 		return;
@@ -851,8 +816,6 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 
 void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
 {
-	bool gotJumpPoint = false;
-
 	iPoint newPos = node.pos + node.direction;
 	int verticalDir = node.direction.y;
 
@@ -874,16 +837,14 @@ void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, co
 	if (!IsWalkable(newPos + iPoint(1, 0)) && IsWalkable(newPos + iPoint(1, verticalDir)) && IsWalkable(newPos + node.direction))
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 1, verticalDir }));
-		gotJumpPoint = true;
 	}
 
 	if (!IsWalkable(newPos + iPoint(-1, 0)) && IsWalkable(newPos + iPoint(-1, verticalDir)) && IsWalkable(newPos + node.direction))
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { -1, verticalDir }));
-		gotJumpPoint = true;
 	}
 	
-	if (gotJumpPoint)
+	if (listToFill.pathNodeList.empty() == false)
 	{
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
 		return;
@@ -893,9 +854,6 @@ void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, co
 
 void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
 {
-	bool gotJumpPoint = false;
-
-	iPoint oldPos = node.pos;
 	iPoint newPos = node.pos + node.direction;
 
 	int horizontalDir = node.direction.x;
@@ -924,7 +882,6 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 		// Extra cases? 
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 0 }));
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 0, verticalDir }));
-		gotJumpPoint = true;
 	}
 
 	if (!IsWalkable(newPos + iPoint(0, -verticalDir)) && IsWalkable(newPos + iPoint(horizontalDir, -verticalDir)) 
