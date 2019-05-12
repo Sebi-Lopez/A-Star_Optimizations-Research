@@ -50,7 +50,9 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 # Selected Approach: JPS
 The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
 
-I'm going to explain its functionality, and afterwards, I'm going to explain the way I implemented it, guided by this [website](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that approaches the method in a different way. I made comparisons with both approaches and concluded that this one has better results. 
+I'm going to explain how it works, and afterwards, I'm going to explain the way I implemented it, guided by this [website](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that approaches the method in a different way. I made comparisons with both approaches and concluded that this one has better results. 
+
+[Here](https://gamedevelopment.tutsplus.com/tutorials/how-to-speed-up-a-pathfinding-with-the-jump-point-search-algorithm--gamedev-5818)  there is a web that has been really helpful to build this algorythm, so feel free to take this as support as well. 
 
 ## Description
 Its main purpose is to reduce the number of nodes in the open list of the A*. This optimizes the search speed for two reasons. 
@@ -74,7 +76,7 @@ The principal idea is that there is no need to explore every possible path (sinc
 Another way to look at what it does is saying that each jump, tries to "prove" that exists another path to the goal that is equally optimal (symmetric) and doesn't pass through certain nodes. Is a bit twisted, but you'll see it clearer now. 
 
 ## Pruning Rules
-There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps (horizontal and vertical) and diagonal jumps. 
+There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps (horizontal and vertical) and diagonal jumps.
 
 To discard the major number of nodes that we are not interested, we are going to look at it through the perspective, am I (as the node) really needed to be on the final path. To prove so, we are going to make sure, that there is no other "interesting" point that needs to be analyzed that forces the path to go through me (because I am part of the optimal path to get to that node). We will talk about this interesting nodes after explaining the jumps. 
 
@@ -101,7 +103,7 @@ To get to the nodes diagonally more to the right of me, the optimal path can go 
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample04.PNG" width="250">
 </p>
 
-So now, we only have one direction to go, as all the others will be explored and analyzed by other jumps. So I will keep jumping nodes horizontally to the right until I encounter with a wall. Then my jump will be over and I can guarantee that there are no interesting points that need to pass through that row of nodes, so we can "discard" the whole row. 
+So now, we only have one direction to go, as all the others will be explored and analyzed by other jumps. So I will keep jumping nodes horizontally to the right, until I encounter with a wall. Then my jump will be over and I can guarantee that there are no interesting points that need to pass through that row of nodes, so we can "discard" the whole row. 
 
 
 <p align="center">
@@ -109,6 +111,8 @@ So now, we only have one direction to go, as all the others will be explored and
 </p>
 
 There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint in the open list. A Jump Point is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
+
+As i mentioned before, we only stop when we find an obstacle, but now that we know about Forced Neighbour, that's also a stop call. So, in conclusion: we keep jumping in that direction until we find with a Forced Neighbour (then I become a Jump Point and add myself to the open list) or when we find a wall. 
 
 
 <p align="center">
@@ -161,16 +165,36 @@ Now, let's not forget, that we are assuming, when doing all this, that the rows 
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG" width="200">
 </p>
 
+Like in the horizontal and vertical jumps, the jump ends either when we find a Jump Point (either via vertical or horizontal jump or our forced neighbours) or when we find with an obstacle (meaning that we can not jump any further). 
+
+We also have to consider, that when we get to the goal node, we also have to stop, as we ended our search. 
 
 ## Iterating
-Once explained the way we can safely discard a large number of nodes (bigger the more big and free the map is) let's see how we apply this technic: 
+Once explained the way that pruning doing jumps works, let's see how we work with the actual Jump Points that these jumps give to the open list. 
+The A* takes the lowest node in his open list and finds all his walkable adjacents. Jump Point Search, does practically the same, with the only difference that it prunes them before adding them to the neighbour list. This way, we can discard many nodes, that are not interesting as we checked with our prunning method. Furthermore, when a Jump Point is added to the open list, it's because it found either the goal (in which case our job is done), or because it found a Forced Neighbour. Expanding in all directions (in the directions of my walkable adjacents) we make sure that this Forced Neighbour is explored aswell. "
 
-For every Jump Point 
-
-
+This is the only thing that changes the JPS in the A* method. Once we have done this, we are all set. 
 
 ## My take on it
 
+I implemented the JPS as explained in its [paper](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf), but before that I took a look at this [site](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that introduced an idea that I could not get off my mind. 
+
+With the JPS, for every node that we analyze in the open list, we jump in every possible direction (as we jump towards every walkable adjacent). As mentioned in its paper: 
+
+"We start with the pruned set of neighbours immediately adjacent to the current node x. Then, instead of adding each neighbour
+n to the set of successors for x, we try to “jump” to a node that is further away but which lies in the same relative direction to x as n" [Online Graph Pruning for Pathfinding on Grid Maps](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf)(Daniel Harabor and Alaban Grastien, 2011).  
+
+That is something that I thought that would not be very efficient. Instead, my intention was to only expand to the direction that I am going. Not only the vector of the direction, more like the zone towards I'm going and not go back to nodes that have already been analyzed. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/exampleOfExpansion.PNG" width="200">
+</p>
+
+As shown in the image above, the JPS algorythm would explain through all these directions, taking the directions between the jumpoint and its walkable adjacents (except the one below, because there's an obstacle). My intention is to only expand towards the green arrows, and ignore the rest. 
+
+## Implementation
+
+To accomplish that, I made 
 
 ## Exercises
 ### TODO 1: 
