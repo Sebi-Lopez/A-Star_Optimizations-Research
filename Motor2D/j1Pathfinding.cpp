@@ -115,25 +115,6 @@ bool j1PathFinding::CleanUp()
 	return true;
 }
 
-void j1PathFinding::CreatePath(const iPoint & origin, const iPoint & destination, bool usingJPS, bool stepByStep)
-{
-	if (usingJPS)
-	{
-		if (!stepByStep)
-			CreatePathJPS(origin, destination);
-		else
-			StartJPS(origin, destination); 
-	}
-
-	else
-	{
-		if (!stepByStep)
-			CreatePathAStar(origin, destination);
-		else
-			StartAStar(origin, destination); 
-	}
-}
-
 // Sets up the walkability map
 void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 {
@@ -358,6 +339,25 @@ int PathNode::CalculateF_JPS(const iPoint & destination)
 	h = pos.DistanceManhattan(destination);
 
 	return g + h;
+}
+
+void j1PathFinding::CreatePath(const iPoint & origin, const iPoint & destination, bool usingJPS, bool stepByStep)
+{
+	if (usingJPS)
+	{
+		if (!stepByStep)
+			CreatePathJPS(origin, destination);
+		else
+			StartJPS(origin, destination);
+	}
+
+	else
+	{
+		if (!stepByStep)
+			CreatePathAStar(origin, destination);
+		else
+			StartAStar(origin, destination);
+	}
 }
 
 // ----------------------------------------------------------------------------------

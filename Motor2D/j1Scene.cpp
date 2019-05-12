@@ -182,7 +182,8 @@ bool j1Scene::PostUpdate()
 	bool ret = true;
 
 	// Draw Path
-	std::vector<iPoint> path = *App->pathfinding->GetLastPath();
+	std::vector<iPoint> path = *App->pathfinding->GetLastPath();		
+
 	for (uint i = 0; i < path.size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
