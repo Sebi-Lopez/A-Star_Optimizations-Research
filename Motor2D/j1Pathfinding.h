@@ -169,7 +169,7 @@ private:
 	iPoint origin = { -1, -1 };
 	PathState state = PathState::MAX;
 
-	bool debug = false; 
+	bool debug = true; 
 };
 
 

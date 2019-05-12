@@ -7,6 +7,7 @@
 #include "j1Textures.h"
 #include "j1Timer.h"
 #include "j1Input.h"
+#include "j1Window.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(0), width(0), height(0)
 {
@@ -40,6 +41,11 @@ bool j1PathFinding::PostUpdate()
 	// Draw Goal
 	pos = App->map->MapToWorld(goal.x, goal.y);
 	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 255, 0, 0, 255);
+
+	static char title[120];
+	sprintf_s(title, 120, " Closed Nodes: %i, Open Nodes: %i, Visited Nodes: %i", closed.pathNodeList.size(), open.pathNodeList.size(), visited.pathNodeList.size()); 
+
+	App->win->AddStringToTitle(title);
 
 	DrawGrid();
 
@@ -352,6 +358,10 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 {
 	closed.pathNodeList.clear();
 	open.pathNodeList.clear();
+
+	this->origin = origin; 
+	goal = destination; 
+
 	int ret = 0;
 	last_path.clear();
 
@@ -564,6 +574,7 @@ PathState j1PathFinding::StartAStar(const iPoint & origin, const iPoint & destin
 	last_path.clear();
 
 	goal = destination;
+	this->origin = origin; 
 
 	if (!IsWalkable(origin) || !IsWalkable(goal))
 	{

@@ -154,13 +154,14 @@ bool j1Scene::Update(float dt)
 	int x2 = x;
 	int y2 = y; 
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	p2SString title("Map:%dx%d, Tile: %d,%d, Currently Using %s, Last Path ms: %i",
+	static char title[120];
+	sprintf_s(title, 120," || Map:%dx%d, Tile: %d,%d || Currently Using - %s -, Last Path ms: %i",
 					App->map->data.width, App->map->data.height,
 					map_coordinates.x, map_coordinates.y,
 					usingJPS ? "JPS" : "A*", 
 					pathTime);
 
-	App->win->SetTitle(title.GetString());
+	App->win->AddStringToTitle(title);
 
 	// Debug path ------------------------------
 	//int x, y;
