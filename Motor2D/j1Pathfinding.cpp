@@ -849,7 +849,7 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
 		return;
 	}
-	else 	HorizontalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
+	else return HorizontalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
 }
 
 void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
@@ -887,7 +887,7 @@ void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, co
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
 		return;
 	}
-	else VerticalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
+	else return VerticalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
 }
 
 void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
