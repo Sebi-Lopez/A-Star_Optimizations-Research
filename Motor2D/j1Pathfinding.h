@@ -100,16 +100,25 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Choses algorithm to work with
+	void CreatePath(const iPoint& origin, const iPoint& destination, bool usingJps = true, bool stepByStep = false); 
+
 	// Main function to request a path from A to B
-	int CreatePath(const iPoint& origin, const iPoint& destination);
+	int CreatePathAStar(const iPoint& origin, const iPoint& destination);
 	int CreatePathJPS(const iPoint& origin, const iPoint& destination);
 
+	// Main function to cycle the algorythm, choses which one
+	void CyclePathfinding(bool usingJps); 
+
+	// Step by step methods
 	PathState StartAStar(const iPoint& origin, const iPoint& destination);
 	PathState CycleAStar();
 
 	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
 	PathState CycleJPS();
 
+
+	// JPS functionality
 	void HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent); 
 	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
@@ -144,10 +153,11 @@ public:
 	iPoint GetPosFromWalkability(int id) const; 
 	
 	// Swaps Walkability Map Value
-	void SwapValue(int id); // True -> False / False -> True
 	void ActivateTile(const iPoint& tile); 
 	void DeactivateTile(const iPoint& tile);
 
+	bool debug = true;
+	bool doingPath = false; 
 
 public: 	
 	uchar* map = nullptr;
@@ -169,7 +179,6 @@ private:
 	iPoint origin = { -1, -1 };
 	PathState state = PathState::MAX;
 
-	bool debug = true; 
 };
 
 

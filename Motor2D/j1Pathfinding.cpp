@@ -115,6 +115,25 @@ bool j1PathFinding::CleanUp()
 	return true;
 }
 
+void j1PathFinding::CreatePath(const iPoint & origin, const iPoint & destination, bool usingJPS, bool stepByStep)
+{
+	if (usingJPS)
+	{
+		if (!stepByStep)
+			CreatePathJPS(origin, destination);
+		else
+			StartJPS(origin, destination); 
+	}
+
+	else
+	{
+		if (!stepByStep)
+			CreatePathAStar(origin, destination);
+		else
+			StartAStar(origin, destination); 
+	}
+}
+
 // Sets up the walkability map
 void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 {
@@ -166,16 +185,6 @@ iPoint j1PathFinding::GetPosFromWalkability(int id) const
 
 	iPoint ret = App->map->MapToWorld(x, y);
 	return ret;
-}
-
-void j1PathFinding::SwapValue(int id)
-{
-	if (id < width * height)
-	{
-		if (map[id] == 0)
-			map[id] = 1; 
-		else map[id] = 0; 
-	}
 }
 
 void j1PathFinding::ActivateTile(const iPoint& tile)
@@ -354,10 +363,11 @@ int PathNode::CalculateF_JPS(const iPoint & destination)
 // ----------------------------------------------------------------------------------
 // Actual A* algorithm: return number of steps in the creation of the path or -1 ----
 // ----------------------------------------------------------------------------------
-int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
+int j1PathFinding::CreatePathAStar(const iPoint& origin, const iPoint& destination)
 {
 	closed.pathNodeList.clear();
 	open.pathNodeList.clear();
+	visited.pathNodeList.clear();
 
 	this->origin = origin; 
 	goal = destination; 
@@ -566,23 +576,41 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 	return -1;
 }
 
+void j1PathFinding::CyclePathfinding(bool usingJps)
+{
+	if (doingPath)
+	{
+		if (usingJps)
+			CycleJPS(); 
+		else CycleAStar(); 
+	}
+
+}
+
 
 PathState j1PathFinding::StartAStar(const iPoint & origin, const iPoint & destination)
 {
 	closed.pathNodeList.clear();
 	open.pathNodeList.clear();
+	visited.pathNodeList.clear();
 	last_path.clear();
 
 	goal = destination;
 	this->origin = origin; 
 
+
 	if (!IsWalkable(origin) || !IsWalkable(goal))
 	{
 		return PathState::Unavailable;
 	}
+
+
 	PathNode originNode(0, origin.DistanceTo(goal), origin, nullptr);
 	open.pathNodeList.push_back(originNode);
 
+
+
+	doingPath = true; 	// Debug purposes: asked when we want to do next step, so we dont overcommit
 	return PathState::MAX;
 }
 
@@ -620,7 +648,7 @@ PathState j1PathFinding::CycleAStar()
 
 			// Flip the path
 			std::reverse(last_path.begin(), last_path.end());
-
+			doingPath = false; 
 			return PathState::Found;
 
 		}
@@ -675,8 +703,6 @@ PathState j1PathFinding::StartJPS(const iPoint & origin, const iPoint & destinat
 	{
 		return PathState::Unavailable;
 	}
-
-
 	
 	// HORIZONTAL CASES 
 	// East
@@ -701,6 +727,7 @@ PathState j1PathFinding::StartJPS(const iPoint & origin, const iPoint & destinat
 	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
 
+	doingPath = true; 	// Debug purposes: asked when we want to do next step, so we dont overcommit
 	return PathState::MAX;
 }
 
@@ -737,7 +764,7 @@ PathState j1PathFinding::CycleJPS()
 
 			// Flip the path 
 			std::reverse(last_path.begin(), last_path.end());
-
+			doingPath = false; 
 			return PathState::Found;
 
 		}

@@ -64,16 +64,12 @@ bool j1Scene::PreUpdate()
 
 	// Ask for paths to Pathfinding 
 	// ------------------------------------------
-	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
+	if(App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
 		if(origin_selected == true)
 		{
 			pathTimer.Start(); 
-			if(usingJPS)
-			App->pathfinding->CreatePathJPS(origin, tileMouse);
-			else 
-				App->pathfinding->CreatePath(origin, tileMouse);
-
+			App->pathfinding->CreatePath(origin, tileMouse, usingJPS, stepByStep);
 			pathTime = pathTimer.Read();
 			origin_selected = false;
 		}
@@ -83,22 +79,31 @@ bool j1Scene::PreUpdate()
 			origin_selected = true;
 		}
 	}
+	// ------------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	// Iterate StepByStep pathfinding
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 	{
-		App->pathfinding->CycleJPS();
+		App->pathfinding->CyclePathfinding(usingJPS);
 	}
 
+	// Switch Algorithms
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		usingJPS = !usingJPS;
 	}
-	// ------------------------------------------
 
+	// Toggle Step By Step
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		stepByStep = !stepByStep;
 
+		if (stepByStep)		// Activate Debug Mode when using step by step, otherwise nothing "happens"
+			App->pathfinding->debug = true; 
+	}
 	// Change walkability Map 
 	// ------------------------------------------
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
 		if (!App->pathfinding->IsWalkable(tileMouse))
 			erasing = true;
@@ -106,7 +111,7 @@ bool j1Scene::PreUpdate()
 			erasing = false;
 	}
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		if (erasing)
 			App->pathfinding->DeactivateTile(tileMouse); 
@@ -147,10 +152,11 @@ bool j1Scene::Update(float dt)
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	static char title[120];
-	sprintf_s(title, 120," || Map:%dx%d, Tile: %d,%d || Currently Using - %s -, Last Path ms: %i",
+	sprintf_s(title, 120," || Map:%dx%d, Tile: %d,%d || Currently Using: - %s - | StepByStep: %s | Last Path ms: %i",
 					App->map->data.width, App->map->data.height,
 					map_coordinates.x, map_coordinates.y,
 					usingJPS ? "JPS" : "A*", 
+					stepByStep ? "On" : "Off",
 					pathTime);
 
 	App->win->AddStringToTitle(title);
