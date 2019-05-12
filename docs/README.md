@@ -125,6 +125,24 @@ These conditions of encountering forced neighbours are applied in a very similar
 ### Diagonal Jumps 
 
 
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG" width="200">
+</p>
+
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample02.PNG" width="200">
+</p>
+
+
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample03.PNG" width="200">
+</p>
+
+
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample04.PNG" width="200">
+</p>
+
+
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG" width="200">
+</p>
+
 
 ## Iterating
 Once explained the way we can safely discard a large number of nodes (bigger the more big and free the map is) let's see how we apply this technic: 
