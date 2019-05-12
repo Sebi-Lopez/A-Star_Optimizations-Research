@@ -81,9 +81,7 @@ To discard the major number of nodes that we are not interested, we are going to
 ### Horizontal Jumps: 
 So I (again as a node) am trying to jump over the right direction (as my parent is on my left). 
 
-<p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample01.PNG" width="200">
-</p>
 
 I can assume these two nodes, above and below of my parent, don't need to go through me to get there (they can easily go through my parent). 
 
