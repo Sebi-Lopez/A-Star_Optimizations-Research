@@ -122,25 +122,40 @@ These conditions of encountering forced neighbours are applied in a very similar
 
 ### Diagonal Jumps 
 
+For the diagonal jumps we make similar assumptions as with the horizontal and vertical jumps to find Jump Points. Also, it has a peculiarity in its expansion, that I am going to explain a bit further. 
+
+If I go, let's say in this direction. 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG" width="200">
 </p>
 
+I can assume that the nodes above and to the right of my parent are reached better through it rather than going through me. 
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample02.PNG" width="200">
 </p>
 
+These two nodes in my corners are, as well, reached more optimally through my parent. As going through me it would suppose a movement of 2√2 and going through my parent it would be only 2. 
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample03.PNG" width="200">
 </p>
 
+So now I am left with these three directions, that are all "ahead" of me. How do I prune all these directions? 
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample04.PNG" width="200">
 </p>
 
+
+Here comes the trick: for each node that we are jumping over diagonally, before we move on to the next diagonal node, I have to prune the vertical and horizontal directions.  So, when I am doing a diagonal jump, I first jump horizontally do the right (in this case). If this jump doesn't returns me a Jump Point, i can safely discard that row, and I proceed to do a vertical jump. Again if this jump doesn't tell me that there is a Jump Point in that row, I can discard it safely. That's almost the main part of these jumping methods, as it expands in all the possible directions doing this method, as shown in the image below. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG
+" width="200">
+</p>
+
+Now, let's not forget, that we are assuming, when doing all this, that the rows that we assumed that are free and that some other path will go through them, may have an obsticle in their way. In this case, as with the horizontal and vertical jumps, we have a Jump Point. So I have to add myself to the open list, to be analyzed later on. 
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG" width="200">
