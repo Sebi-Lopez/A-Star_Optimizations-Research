@@ -61,7 +61,11 @@ How does it do it? Well, the concept that you have to stick to your head is Path
 ### Path Symmetry
 His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
 
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png?raw=true" width="200"/>
 
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Symmetrt.PNG?raw=true"/>
+
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/symmetry3.PNG?raw=true"/>
 
 When talking about symmetric paths, the A* algorithm is forced to explore every node adjacent to the optimal path. In the past picture, depending on how we handle the situation of having two nodes with the same score, A* might even explore the whole map before reaching the destination. 
 
