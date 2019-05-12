@@ -43,7 +43,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	debug_tex = App->tex->Load("maps/debugTex.png");
+	pathTex = App->tex->Load("maps/pathTex.png");
 
 	return true;
 }
@@ -145,8 +145,6 @@ bool j1Scene::Update(float dt)
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	int x2 = x;
-	int y2 = y; 
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	static char title[120];
 	sprintf_s(title, 120," || Map:%dx%d, Tile: %d,%d || Currently Using - %s -, Last Path ms: %i",
@@ -157,8 +155,7 @@ bool j1Scene::Update(float dt)
 
 	App->win->AddStringToTitle(title);
 
-	// Debug path ------------------------------
-	//int x, y;
+	// Debug Draw cursor ------------------------------
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
 	p = App->map->WorldToMap(p.x, p.y);
@@ -170,17 +167,6 @@ bool j1Scene::Update(float dt)
 	rect.w = App->map->data.tile_width;
 	rect.h = App->map->data.tile_height;
 	App->render->DrawQuad(rect,255,0,255,255);
-
-	std::vector<iPoint> path = *App->pathfinding->GetLastPath();
-
-	for(uint i = 0; i < path.size(); ++i)
-	{
-		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
-		//App->render->DrawQuad({pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height}, 255, 255,255);
-		//App->render->DrawQuad({ pos.x, pos.y + (int)(App->map->data.tile_height * 0.5F), 5, 5 }, 255, 0, 255, 175, true);
-		App->render->Blit(debug_tex, pos.x, pos.y);
-	}
-
 	return true;
 }
 
@@ -188,6 +174,15 @@ bool j1Scene::Update(float dt)
 bool j1Scene::PostUpdate()
 {
 	bool ret = true;
+
+	// Draw Path
+	std::vector<iPoint> path = *App->pathfinding->GetLastPath();
+	for (uint i = 0; i < path.size(); ++i)
+	{
+		iPoint pos = App->map->MapToWorld(path[i].x, path[i].y);		// X + 1, Same problem with map
+		App->render->Blit(pathTex, pos.x, pos.y);
+	}
+	// ----- 
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;

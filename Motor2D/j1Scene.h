@@ -34,7 +34,7 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* debug_tex = nullptr;
+	SDL_Texture* pathTex = nullptr;
 	uint32 pathTime; 
 	bool usingJPS = true; 
 };
