@@ -3,11 +3,12 @@
 
 #include "j1Module.h"
 #include "p2Point.h"
-
+#include "p2Defs.h"
 #include <list>
 #include <vector>
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
+#define CLAMP(x, upper, lower) (MIN(upper, MAX(x, lower)))
 
 // --------------------------------------------------
 // Recommended reading:
@@ -44,23 +45,22 @@ struct PathNode
 {
 	// Convenient constructors
 	PathNode();
-	PathNode(int g, int h, const iPoint& pos, const PathNode* parent, const iPoint& direction = iPoint(0,0), bool isDiagonal = false);
+	PathNode(int g, int h, const iPoint& pos, const PathNode* parent, bool isDiagonal = false);
 	PathNode(const PathNode& node);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
 	uint FindWalkableAdjacents(PathList& list_to_fill) const;
+	void PruneNeighbours(PathList& list_to_fill);
 
 	// Calculates this tile score
 	int Score() const;
 	// Calculate the F for a specific destination tile
 	int CalculateF(const iPoint& destination);
 	int CalculateFJPS(const iPoint& destination);
-
 	// -----------
 	int g;
 	int h;
 	iPoint pos;
-	iPoint direction;
 	const PathNode* parent; // needed to reconstruct the path in the end
 	bool isDiagonal; 
 };
@@ -72,7 +72,6 @@ struct PathList
 {
 	// Looks for a node in this list and returns it's list node or NULL
 	const PathNode* Find(const iPoint& point) const;
-	const PathNode* FindJPS(const iPoint& point, const iPoint& direction) const;
 
 	// Returns the Pathnode with lowest score in this list or NULL if empty
 	const PathNode* GetNodeLowestScore() const;
@@ -110,15 +109,10 @@ public:
 	PathState StartJPS(const iPoint& origin, const iPoint& destination); 
 	PathState CycleJPS();
 
-	void HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent); 
-	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
-	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
-
-	void JumpFilter(const PathNode& node, PathList& listToFill, const PathNode* parent);
-
+	PathNode Jump(const iPoint& pos, const iPoint& direction, const PathNode* parent);
+	
 	// To request all tiles involved in the last generated path
 	const std::vector<iPoint>* GetLastPath() const;
-
 
 	// Walkability Map Functions
 
