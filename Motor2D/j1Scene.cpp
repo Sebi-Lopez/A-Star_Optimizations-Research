@@ -134,19 +134,13 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= 1;
 	
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		App->win->SetScale(4);
-			
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-		App->win->SetScale(3);
 
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->win->SetScale(2);
-
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		App->win->SetScale(1);
-
-
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+	{
+		// Toggle between the two window scales
+		App->win->GetScale() == 1 ? App->win->SetScale(4) : App->win->SetScale(1);
+	}
+	
 	App->map->Draw();
 
 	int x, y;
