@@ -49,6 +49,8 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 # Selected Approach: JPS
 The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
 
+I'm going to explain its functionality, and afterwards, I'm going to explain the way I implemented it, guided by this [website](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that approaches the method in a different way. I made comparisons with both approaches and concluded that this one has better results. 
+
 ## Description
 Its main purpose is to reduce the number of nodes in the open list of the A*. This optimizes the search speed for two reasons. 
 1 - It reduces the number of operations needed to make a path.
@@ -69,23 +71,61 @@ The principal idea is that there is no need to explore every possible path (sinc
 Another way to look at what it does is saying that each jump, tries to "prove" that exists another path to the goal that is equally optimal (symmetric) and doesn't pass through certain nodes. Is a bit twisted, but you'll see it clearer now. 
 
 ## Pruning Rules
-There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps and diagonal jumps. 
+There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps (horizontal and vertical) and diagonal jumps. 
 
-Horizontal Jumps: 
+To discard the major number of nodes that we are not interested, we are going to look at it through the perspective, am I (as the node) really needed to be on the final path. To prove so, we are going to make sure, that there is no other "interesting" point that needs to be analyzed that forces the path to go through me (because I am part of the optimal path to get to that node). We will talk about this interesting nodes after explaining the jumps. 
 
+### Horizontal Jumps: 
+So I (again as a node) am trying to jump over the right direction (as my parent is on my left). 
+
+I can assume these two nodes, above and below of my parent, don't need to go through me to get there (they can easily go through my parent). 
+
+As well, I can assume that the nodes avobe and below me, are optimally obtained going through my parent diagonal (as its moving distance  is √2 and going through me the distance would be 2). 
+
+To get to the nodes diagonally more to the right of me, the optimal path can go through me, but as well, it can go through the two nodes that we just discarded, as the path is symmetric. We are going to assume, that that is the correct path to go (you will see why later).
+
+So now, we only have one direction to go, as all the others will be explored and analyzed by other jumps. So I will keep jumping nodes horizontally to the right until I encounter with a wall. Then my jump will be over and I can guarantee that there are no interesting points that need to pass through that row of nodes, so we can "discard" the whole row. 
+
+There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint in the open list. A Jump Point is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
+
+Why is this an interesting point, you may ask. The reason is that this node can be a node that belongs to the optimal path, and we assured, that the "best" way to get to it, is going through me (adding myself in the open list to be analyzed). 
+
+These conditions of encountering forced neighbours are applied in a very similar way to the vertical jumps, so I won't get deep in those. 
+
+### Diagonal Jumps 
 
 
 
 ## Iterating
+Once explained the way we can safely discard a large number of nodes (bigger the more big and free the map is) let's see how we apply this technic: 
+
+For every Jump Point 
+
+
+
+## My take on it
+
+
 ## Exercises
+### TODO 1: 
+
+###TODO 2: 
+
+### TODO 3: 
+
+### TODO 4: 
+
+### TODO 5: 
+
+### TODO 6: 
 
 
 ## Improvements: 
-
 ## Don't miss any nodes
 
 ## RSR
  RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
+
 
 
 
