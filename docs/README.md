@@ -82,19 +82,19 @@ To discard the major number of nodes that we are not interested, we are going to
 So I (again as a node) am trying to jump over the right direction (as my parent is on my left). 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample01.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample01.PNG" width="200">
 </p>
 
 I can assume these two nodes, above and below of my parent, don't need to go through me to get there (they can easily go through my parent). 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample02.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample02.PNG" width="200">
 </p>
 
 As well, I can assume that the nodes avobe and below me, are optimally obtained going through my parent diagonal (as its moving distance  is √2 and going through me the distance would be 2). 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample03.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample03.PNG" width="200">
 </p>
 
 To get to the nodes diagonally more to the right of me, the optimal path can go through me, but as well, it can go through the two nodes that we just discarded, as the path is symmetric. We are going to assume, that that is the correct path to go (you will see why later).
@@ -107,14 +107,14 @@ So now, we only have one direction to go, as all the others will be explored and
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample05.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample07.PNG" width="200">
 </p>
 
 There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint in the open list. A Jump Point is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample06.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample06.PNG" width="200">
 </p>
 
 
