@@ -18,10 +18,22 @@ It's for this reason we are going to find an alternative to this algorithm, to g
 ## HPA* 
 ## IDA* 
 
+## Dead End Detection
+## Dead End Heuristics
+## Swamps
+El uso de pantanos es otra posible optimizacion que intenta evitar areas que son navegadas i extendidas innecesariamente. De esta forma, evitan la propagacion por zonas (que pueden llegar a ser muy grandes) en las cuales sabemos que el path optimo no cruzarà. 
+The usage of Swamps is another method that tries to avoid areas that are navigated unnecessary by heuristic methods like A*. It calculates zones this undesirable zones in pre-runtime. This way, avoid the expansion of the nodes in zones (that can get to be really big) in which we know the path won't pass. In fact, the path will only pass those zones if the end of the beginning of it is located in these zones. 
+
+## Portal Heuristic
+
+
+## RSR
+ RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. 
+
+
 # Selected Approach: JPS
 ## Description
 ## Pruning Rules
 ## Iterating
 ## Exercices
-
 
