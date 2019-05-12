@@ -817,6 +817,8 @@ void j1PathFinding::PruneAdjacents(const PathNode & node, PathList & listToFill,
 void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, const PathNode* parent)
 {
 	iPoint newPos = node.pos + node.direction;
+	PathNode jumpPoint(-1, -1, newPos, parent, { 0,0 });
+
 	int horizontalDir = node.direction.x;
 
 	if (!IsWalkable(newPos))
@@ -826,7 +828,7 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 
 	if (newPos == goal)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent));
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
 
@@ -836,25 +838,32 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 
 	if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 1 }));
+		jumpPoint.direction = { horizontalDir, 1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
 	}
 
 	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, -1 }));
+		jumpPoint.direction = { horizontalDir, -1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
 	}
 
 	if (listToFill.pathNodeList.empty() == false)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
+		jumpPoint.direction = node.direction;
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
-	else return HorizontalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
+	
+	jumpPoint.direction = node.direction; 
+	return HorizontalJump(jumpPoint, listToFill, parent);
 }
 
 void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
 {
 	iPoint newPos = node.pos + node.direction;
+	PathNode jumpPoint(-1, -1, newPos, parent, { 0,0 }); 
+
 	int verticalDir = node.direction.y;
 
 	if (!IsWalkable(newPos))
@@ -864,35 +873,41 @@ void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, co
 
 	if (newPos == goal)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent));
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
 
 	// Only for debugging
-	visited.pathNodeList.push_back(PathNode(-1, -1, newPos, parent));
+	visited.pathNodeList.push_back(jumpPoint);
 	// --- 
 
 	if (!IsWalkable(newPos + iPoint(1, 0)) && IsWalkable(newPos + iPoint(1, verticalDir)) && IsWalkable(newPos + node.direction))
 	{
+		jumpPoint.direction = { 1, verticalDir }; 
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 1, verticalDir }));
 	}
 
 	if (!IsWalkable(newPos + iPoint(-1, 0)) && IsWalkable(newPos + iPoint(-1, verticalDir)) && IsWalkable(newPos + node.direction))
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { -1, verticalDir }));
+		jumpPoint.direction = { -1, verticalDir }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
 	}
 	
 	if (listToFill.pathNodeList.empty() == false)
 	{
+		jumpPoint.direction = node.direction; 
 		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
 		return;
 	}
-	else return VerticalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
+	
+	jumpPoint.direction = node.direction; 
+	return VerticalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
 }
 
 void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
 {
 	iPoint newPos = node.pos + node.direction;
+	PathNode jumpPoint(-1, -1, newPos, parent, node.direction); 
 
 	int horizontalDir = node.direction.x;
 	int verticalDir = node.direction.y;
@@ -902,7 +917,7 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 
 	if (newPos == goal)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent));
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
 
@@ -915,35 +930,48 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 	if (!IsWalkable(newPos + iPoint(-horizontalDir, 0)) && IsWalkable(newPos + iPoint(-horizontalDir, verticalDir)) 
 		&& IsWalkable(newPos + iPoint(0,verticalDir)))
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { -horizontalDir, verticalDir }));
+		jumpPoint.direction = { -horizontalDir, verticalDir }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
 
 		// Extra cases? 
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 0 }));
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 0, verticalDir }));
+		jumpPoint.direction = { horizontalDir, 0 };
+		listToFill.pathNodeList.push_back(jumpPoint);
+
+		jumpPoint.direction = { 0, verticalDir };
+		listToFill.pathNodeList.push_back(jumpPoint);
 	}
 
 	if (!IsWalkable(newPos + iPoint(0, -verticalDir)) && IsWalkable(newPos + iPoint(horizontalDir, -verticalDir)) 
 		&& IsWalkable(newPos + iPoint(horizontalDir, 0)))
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, -verticalDir }));
+		jumpPoint.direction = { horizontalDir, -verticalDir };
+		listToFill.pathNodeList.push_back(jumpPoint);
 
 		// Extra cases? 
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 0 }));
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 0, verticalDir }));
+		jumpPoint.direction = { horizontalDir, 0};
+		listToFill.pathNodeList.push_back(jumpPoint);
+
+		jumpPoint.direction = { 0, verticalDir };
+		listToFill.pathNodeList.push_back(jumpPoint);
 	}
 
 	if (listToFill.pathNodeList.empty() == false)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
+		jumpPoint.direction = node.direction; 
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
 
 
-	HorizontalJump(PathNode(-1, -1, newPos, &node, { horizontalDir, 0 }), listToFill, parent);
+	jumpPoint.direction = { horizontalDir, 0 };
+	HorizontalJump(jumpPoint, listToFill, parent);
 	if (listToFill.pathNodeList.empty() == false)
 	{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { 0, verticalDir }));
+		jumpPoint.direction = node.direction;
+		listToFill.pathNodeList.push_back(jumpPoint);
+
+		jumpPoint.direction = { 0, verticalDir};
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 	}
 	else
@@ -951,13 +979,17 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 		VerticalJump(PathNode(-1, -1, newPos, parent, { 0, verticalDir }), listToFill, parent);
 		if(listToFill.pathNodeList.empty() == false)
 		{
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, node.direction));
-		listToFill.pathNodeList.push_back(PathNode(-1, -1, newPos, parent, { horizontalDir, 0 }));
+		jumpPoint.direction = node.direction;
+		listToFill.pathNodeList.push_back(jumpPoint);
+
+		jumpPoint.direction = { horizontalDir, 0 };
+		listToFill.pathNodeList.push_back(jumpPoint);
 		return;
 		}
 		else
 		{
-			return DiagonalJump(PathNode(-1, -1, newPos, parent, node.direction), listToFill, parent);
+			jumpPoint.direction = node.direction;
+			return DiagonalJump(jumpPoint, listToFill, parent);
 		}
 	}
 	
