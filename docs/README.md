@@ -49,7 +49,7 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 # Selected Approach: JPS
 The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
 
-I'm going to explain its functionality, and afterwards, I'm going to explain my take on it, as I propose other ways to work that, under testing, have shown several improvements. 
+I'm going to explain its functionality, and afterwards, I'm going to explain the way I implemented it, guided by this [website](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that approaches the method in a different way. I made comparisons with both approaches and concluded that this one has better results. 
 
 ## Description
 Its main purpose is to reduce the number of nodes in the open list of the A*. This optimizes the search speed for two reasons. 
@@ -86,9 +86,9 @@ To get to the nodes diagonally more to the right of me, the optimal path can go 
 
 So now, we only have one direction to go, as all the others will be explored and analyzed by other jumps. So I will keep jumping nodes horizontally to the right until I encounter with a wall. Then my jump will be over and I can guarantee that there are no interesting points that need to pass through that row of nodes, so we can "discard" the whole row. 
 
-There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint. A JumpPoint is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
+There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint in the open list. A Jump Point is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
 
-Why is this an interesting point, you may ask. The reason is that this node can be a node that belongs to the optimal path, and we assured, that the "best" way to get to it, is going through me (adding myself as a JumpPoint). 
+Why is this an interesting point, you may ask. The reason is that this node can be a node that belongs to the optimal path, and we assured, that the "best" way to get to it, is going through me (adding myself in the open list to be analyzed). 
 
 These conditions of encountering forced neighbours are applied in a very similar way to the vertical jumps, so I won't get deep in those. 
 
@@ -97,7 +97,9 @@ These conditions of encountering forced neighbours are applied in a very similar
 
 
 ## Iterating
+Once explained the way we can safely discard a large number of nodes (bigger the more big and free the map is) let's see how we apply this technic: 
 
+For every Jump Point 
 
 
 
@@ -105,14 +107,25 @@ These conditions of encountering forced neighbours are applied in a very similar
 
 
 ## Exercises
+### TODO 1: 
+
+###TODO 2: 
+
+### TODO 3: 
+
+### TODO 4: 
+
+### TODO 5: 
+
+### TODO 6: 
 
 
 ## Improvements: 
-
 ## Don't miss any nodes
 
 ## RSR
  RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
+
 
 
 
