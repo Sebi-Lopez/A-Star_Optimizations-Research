@@ -16,6 +16,9 @@ It's for this reason we are going to find an alternative to this algorithm, to g
 ## Theta*
 ## ARA* (Anytime Repairing A*)
 ## HPA* 
+Hierarchical Path-Finding A* is a pathfinding method that abstracts any grid-map to different sets of "clusters" or "blocks" with different levels of abstraction. In their [paper](https://webdocs.cs.ualberta.ca/~mmueller/ps/hpastar.pdf) the creators use a metaphor with a car trip starting in one city and ending in a city in another country (both points with its respective addresses). Us, humans, can abstract the path we are going to take really well. We first look to get into a highway, then move from one state to another, and when we get to the destination city or state, we search at the "city level", within its streets and roundabouts. This method follows this abstraction principle. 
+As mentioned, each cluster has information about its entries, its distances and costs. So travelling at "city level" can get very efficient. 
+
 ## IDA* 
 
 ## Dead End Detection
@@ -36,4 +39,6 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 ## Pruning Rules
 ## Iterating
 ## Exercices
+
+
 
