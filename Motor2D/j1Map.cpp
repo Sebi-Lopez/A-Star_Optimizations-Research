@@ -82,7 +82,7 @@ void j1Map::DebugDraw()
 			rect.y = App->pathfinding->GetPosFromWalkability(i).y;
 			rect.w = App->map->data.tile_width;
 			rect.h = App->map->data.tile_height;
-			App->render->DrawQuad(rect, 0, 240, 255, 255);
+			App->render->DrawQuad(rect, 55, 55, 55, 255);
 		}
 	}	
 }
