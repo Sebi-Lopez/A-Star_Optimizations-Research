@@ -32,6 +32,7 @@ Hierarchical Path-Finding A* is a pathfinding method that abstracts any grid-map
 
 As mentioned, each cluster has information about its entries, its distances and costs. So travelling at "city level" can get very efficient. These clusters are made a clustering algorithm that groups neighbours together when appropriate. Therefore, there's no need for, let's say, the designer of the map, to add extra data when creating the map, as this algorithm makes the abstraction zones by itself. Consequently, this method doesn't have any problem to be added to a procedurally generated map.
 
+
 ## IDA* 
 
 ## Dead End Detection
@@ -128,6 +129,12 @@ For every Jump Point
 ## RSR
  RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
 
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png" width="340">
+</p>
 
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png" width="340">
+</p>
 
 
