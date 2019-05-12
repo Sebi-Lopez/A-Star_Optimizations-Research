@@ -43,20 +43,49 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 ## Portal Heuristic
 
 
-## RSR
- RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. 
+
 
 
 # Selected Approach: JPS
-The Jump Point Search is an algorithm build upon A* pathfinding algorithm that needs no pre-processing. Its main purpose is to reduce the number of nodes in the open list of the A*. This optimizes the search speed for two reasons. 
+The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
+
+## Description
+Its main purpose is to reduce the number of nodes in the open list of the A*. This optimizes the search speed for two reasons. 
 1 - It reduces the number of operations needed to make a path.
 2 - (Most Important) With fewer nodes in the open list every iteration to find the node with lower cost is cheaper. 
 
 How does it do it? Well, the concept that you have to stick to your head is Path Symmetry.  
-His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric. 
 
-## Description
+### Path Symmetry
+His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
+
+
+
+When talking about symmetric paths, the A* algorithm is forced to explore every node adjacent to the optimal path. In the past picture, depending on how we handle the situation of having two nodes with the same score, A* might even explore the whole map before reaching the destination. 
+
+
+## Jumping 
+The principal idea is that there is no need to explore every possible path (since most of them are symmetric), so not every node is interesting to look at. The algorithm "jumps over" these non-interesting nodes, avoiding to analyze them explicitly (adding them to the open list). It does this following two jump rules, also called Pruning Rules. 
+Another way to look at what it does is saying that each jump, tries to "prove" that exists another path to the goal that is equally optimal (symmetric) and doesn't pass through certain nodes. Is a bit twisted, but you'll see it clearer now. 
+
 ## Pruning Rules
+There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps and diagonal jumps. 
+
+Horizontal Jumps: 
+
+
+
+
 ## Iterating
 ## Exercises
+
+
+## Improvements: 
+
+## Don't miss any nodes
+
+## RSR
+ RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
+
+
 
