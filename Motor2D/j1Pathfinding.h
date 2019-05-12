@@ -123,7 +123,7 @@ public:
 	void VerticalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 	void DiagonalJump(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
-	void JumpFilter(const PathNode& node, PathList& listToFill, const PathNode* parent);
+	void PruneAdjacents(const PathNode& node, PathList& listToFill, const PathNode* parent);
 
 	// To request all tiles involved in the last generated path
 	const std::vector<iPoint>* GetLastPath() const;

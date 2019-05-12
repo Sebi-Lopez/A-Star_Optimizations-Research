@@ -543,7 +543,7 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 			// Fill a list of all adjancent nodes
 			PathList neighbors;
 
-			JumpFilter(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
 
 			// Iterate adjancent nodes:
 			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
@@ -772,7 +772,7 @@ PathState j1PathFinding::CycleJPS()
 			// Fill a list of all adjancent nodes
 			PathList neighbors;
 
-			JumpFilter(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
 			
 			// Iterate adjancent nodes:
 			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
@@ -805,7 +805,7 @@ PathState j1PathFinding::CycleJPS()
 	return PathState::MAX;
 }
 
-void j1PathFinding::JumpFilter(const PathNode & node, PathList & listToFill, const PathNode* parent)
+void j1PathFinding::PruneAdjacents(const PathNode & node, PathList & listToFill, const PathNode* parent)
 {
 	if (node.direction.y == 0)
 		HorizontalJump(node, listToFill, parent);
