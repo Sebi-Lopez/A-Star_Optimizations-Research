@@ -19,7 +19,7 @@ There are lots of possibilities to optimize the A* each one with its pros and co
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/VectorFields/vectorField2.png?raw=true" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/VectorFields/vectorField2.png?raw=true" width="400">
 </p>
 
 
