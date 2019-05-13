@@ -54,6 +54,16 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG?raw=true" width="200">
 </p>
 
+## RSR
+ RSR or [Rectangular Symmetry Reduction](http://aigamedev.com/open/tutorial/symmetry-in-pathfinding/#2RectangularSymmetryReduction) is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as the author claims, can make a huge impact in the pathfinding speed. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png?raw=true" width="340">
+</p>
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png?raw=true" width="340">
+</p>
 
 # Selected Approach: JPS
 The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
@@ -70,7 +80,7 @@ Its main purpose is to reduce the number of nodes in the open list of the A*. Th
 How does it do it? Well, the concept that you have to stick to your head is Path Symmetry.  
 
 ### Path Symmetry
-His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
+His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the [path symmetry](http://aigamedev.com/open/tutorial/symmetry-in-pathfinding/#1PathSymmetries). The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png?raw=true" width="340">
@@ -240,15 +250,6 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 ## Improvements: 
 ## Don't miss any nodes
 
-## RSR
- RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
 
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png?raw=true" width="340">
-</p>
-
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png?raw=true" width="340">
-</p>
 
 
