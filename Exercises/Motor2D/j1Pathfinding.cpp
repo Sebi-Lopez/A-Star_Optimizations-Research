@@ -483,7 +483,7 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 		return -1;
 	}
 
-	// TODO 6: Make the starting process and the cycle process of the JPS in one take here
+	// TODO 7: Make the starting process and the cycle process of the JPS in one take here
 	// It's really easy, its copying the same code you've in the correct position. 
 	
 
@@ -742,7 +742,7 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 
 	// TODO 2: Find any possible forced neighbour for an horizontal Jump
 	// When we find one, we have to add it to the list to make sure its analyzed later on (with the proper direction), and we exit
-	// Aswell, before we exit, don't forget to add the current propagation (as a node), so it can be completed and not forgotten
+	// Also, before we exit, don't forget to add the current propagation (as a node), so it can be completed and not forgotten
 	
 
 	// TODO 3: Really simple: if not found any forced neighbour, we just keep on jumping in the same direction as we are "coming from"
