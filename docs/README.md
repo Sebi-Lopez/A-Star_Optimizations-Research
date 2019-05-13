@@ -200,8 +200,7 @@ To start things off, we need to be able to expand in all the possible directions
 ### TODO 1: 
 "Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
 
-´´´cpp 
-
+```cpp
 // Horizontal Cases
 // East
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
@@ -224,7 +223,8 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 // North - West
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
-´´´
+```    
+
 
 ###TODO 2: 
 
