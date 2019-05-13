@@ -194,30 +194,37 @@ I missunderstood the iteration of the JPS initally, and when the pruning methods
 ### TODO 0: 
 "Add 8 different starting nodes, with the 8 possible directions to the open list."
 To start things off, we need to be able to expand in all the possible directions. 
-<// Horizontal Cases
 
-	// East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
-	// West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
-	
-	// VERTICAL CASES 
-	// North
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
-	// South
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
-
-	// DIAGONAL CASES 
-	// North - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
-	// South - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
-	// South - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
-	// North - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));>
+- Solution
 
 ### TODO 1: 
+"Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
+
+´´´cpp 
+
+// Horizontal Cases
+// East
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
+// West
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
+
+// VERTICAL CASES 
+// North
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
+// South
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
+
+// DIAGONAL CASES 
+// North - East
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
+// South - East
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
+// South - West
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
+// North - West
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
+
+´´´
 
 ###TODO 2: 
 
