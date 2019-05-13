@@ -271,7 +271,7 @@ return HorizontalJump(jumpPoint, listToFill, parent);
 Once we've got to this point we should be able to see how both horizontal and vertical jumps are made, and can properly detect if there is a Forced Neighbour. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/TODOS/TODO%203%20-%20Middle%20Step.PNG?raw=true" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/TODOS/TODO%203%20-%20Middle%20Step.PNG?raw=true" width="400">
 </p>
 
 
@@ -311,16 +311,16 @@ Same concept as TODO 4.
 ```
 else
 {
-jumpPoint.direction = { 0, verticalDir };
-VerticalJump(jumpPoint, listToFill, parent);
-if(listToFill.pathNodeList.empty() == false)
-{
-jumpPoint.direction = node.direction;
-listToFill.pathNodeList.push_back(jumpPoint);
+	jumpPoint.direction = { 0, verticalDir };
+	VerticalJump(jumpPoint, listToFill, parent);
+	if(listToFill.pathNodeList.empty() == false)
+	{
+	jumpPoint.direction = node.direction;
+	listToFill.pathNodeList.push_back(jumpPoint);
 
-jumpPoint.direction = { horizontalDir, 0 };
-listToFill.pathNodeList.push_back(jumpPoint);
-return;
+	jumpPoint.direction = { horizontalDir, 0 };
+	listToFill.pathNodeList.push_back(jumpPoint);
+	return;
 }
 ```
 
@@ -351,8 +351,13 @@ This implementation has some problems that are still unsolved due to lack of tim
 An example of this error is shown in this picture. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/iteration.PNG?raw=true" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Performance/jps1_correction.PNG?raw=true" width="400">
 </p>
+
+If you can't see it properly, you can click on it to make it bigger. The blue arrow signals one node that is not on the path (it's not yellow) but it should be, as its impossible for the yellow node to the right get to the next node in the path, the yellow node to the left.
+
+
+
 
 
 
