@@ -40,7 +40,7 @@ bool j1PathFinding::PostUpdate()
 
 	// Draw Goal
 	pos = App->map->MapToWorld(goal.x, goal.y);
-	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 255, 0, 0, 255);
+	App->render->DrawQuad({ pos.x,pos.y,App->map->data.tile_width, App->map->data.tile_height }, 0, 0, 255, 255);
 
 	static char title[120];
 	sprintf_s(title, 120, " Closed Nodes: %i, Open Nodes: %i, Visited Nodes: %i", closed.pathNodeList.size(), open.pathNodeList.size(), visited.pathNodeList.size()); 
@@ -483,96 +483,13 @@ int j1PathFinding::CreatePathJPS(const iPoint & origin, const iPoint & destinati
 		return -1;
 	}
 
-	// Horizontal Cases
-
-	// East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
-	// West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
+	// TODO 6: Make the starting process and the cycle process of the JPS in one take here
+	// It's really easy, its copying the same code you've in the correct position. 
 	
-	// VERTICAL CASES 
-	// North
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
-	// South
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
-
-	// DIAGONAL CASES 
-	// North - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
-	// South - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
-	// South - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
-	// North - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
 	while (open.pathNodeList.empty() == false)
 	{
-
-		// Move the lowest score cell from open list to the closed list
-		PathNode* curr = (PathNode*)open.GetNodeLowestScore();
-		closed.pathNodeList.push_back(*curr);
-
-		// Erase element from list -----
-		std::list<PathNode>::iterator it = open.pathNodeList.begin();
-		while (it != open.pathNodeList.end()) {
-
-			if (&(*it) == &(*curr))
-				break;
-			it++;
-		}
-		open.pathNodeList.erase(it);
-		// Erase element from list -----
-		// If we just added the destination, we are done!
-		// Backtrack to create the final path
-		if (closed.pathNodeList.back().pos == goal) {
-
-			for (PathNode iterator = closed.pathNodeList.back(); iterator.parent != nullptr;
-				iterator = *closed.Find(iterator.parent->pos)) {
-
-				last_path.push_back(iterator.pos);
-			}
-
-			last_path.push_back(closed.pathNodeList.front().pos);
-
-			// Flip the path 
-			std::reverse(last_path.begin(), last_path.end());
-
-			return last_path.size();
-		}
-		else {
-			// Fill a list of all adjancent nodes
-			PathList neighbors;
-
-			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
-
-			// Iterate adjancent nodes:
-			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
-
-			while (iterator != neighbors.pathNodeList.end()) {
-				// ignore nodes in the closed list
-				if (closed.Find((*iterator).pos) != nullptr) {
-					iterator++;
-					continue;
-				}
-
-				(*iterator).CalculateF_JPS(goal);
-				// If it is already in the open list, check if it is a better path (compare G)
-				if (open.FindJPS((*iterator).pos, (*iterator).direction) != nullptr) {
-
-					// If it is a better path, Update the parent
-					PathNode open_node = *open.Find((*iterator).pos);
-					if ((*iterator).g < open_node.g)
-						open_node.parent = (*iterator).parent;
-				}
-				else {
-					// If it is NOT found, calculate its F and add it to the open list
-					open.pathNodeList.push_back(*iterator);
-				}
-				iterator++;
-			}
-			neighbors.pathNodeList.clear();
-		}
+	
 	}
 	return -1;
 }
@@ -705,27 +622,10 @@ PathState j1PathFinding::StartJPS(const iPoint & origin, const iPoint & destinat
 		return PathState::Unavailable;
 	}
 	
-	// HORIZONTAL CASES 
-	// East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
-	// West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
 
-	// VERTICAL CASES 
-	// North
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
-	// South
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
+	// TODO 0: Add 8 different starting nodes, with the 8 possible directions to the open list
+	// Make sure to leave the two horizontal ones last, so we can see progress after to-dos 2 and 3
 
-	// DIAGONAL CASES 
-	// North - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
-	// South - East
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
-	// South - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
-	// North - West
-	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
 
 	doingPath = true; 	// Debug purposes: asked when we want to do next step, so we dont overcommit
@@ -771,14 +671,16 @@ PathState j1PathFinding::CycleJPS()
 		}
 		else {
 			// Fill a list of all adjancent nodes
-			PathList neighbors;
+			PathList neighbours;
 
-			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
-			
-			// Iterate adjancent nodes:
-			std::list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
+			// TODO 1: Fill the nieghbours list with the pruned neighbours.  
+			// Keep in mind that we do the same like in A*, only that we prune before adding elements
+			// It's a single line
 
-			while (iterator != neighbors.pathNodeList.end()) {
+			// Iterate neighbours nodes:
+			std::list<PathNode>::iterator iterator = neighbours.pathNodeList.begin();
+
+			while (iterator != neighbours.pathNodeList.end()) {
 				// ignore nodes in the closed list
 				if (closed.Find((*iterator).pos) != nullptr) {
 					iterator++;
@@ -800,7 +702,7 @@ PathState j1PathFinding::CycleJPS()
 				}
 				iterator++;
 			}
-			neighbors.pathNodeList.clear();
+			neighbours.pathNodeList.clear();
 		}
 	}
 	return PathState::MAX;
@@ -808,6 +710,7 @@ PathState j1PathFinding::CycleJPS()
 
 void j1PathFinding::PruneAdjacents(const PathNode & node, PathList & listToFill, const PathNode* parent)
 {
+	// Choose the correct jump from the given direction
 	if (node.direction.y == 0)
 		HorizontalJump(node, listToFill, parent);
 	else if (node.direction.x == 0)
@@ -837,27 +740,14 @@ void j1PathFinding::HorizontalJump(const PathNode& node, PathList& listToFill, c
 	visited.pathNodeList.push_back(jumpPoint);
 	// --- 
 
-	if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
-	{
-		jumpPoint.direction = { horizontalDir, 1 }; 
-		listToFill.pathNodeList.push_back(jumpPoint);
-	}
-
-	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
-	{
-		jumpPoint.direction = { horizontalDir, -1 }; 
-		listToFill.pathNodeList.push_back(jumpPoint);
-	}
-
-	if (listToFill.pathNodeList.empty() == false)
-	{
-		jumpPoint.direction = node.direction;
-		listToFill.pathNodeList.push_back(jumpPoint);
-		return;
-	}
+	// TODO 2: Find any possible forced neighbour for an horizontal Jump
+	// When we find one, we have to add it to the list to make sure its analyzed later on (with the proper direction), and we exit
+	// Aswell, before we exit, don't forget to add the current propagation (as a node), so it can be completed and not forgotten
 	
-	jumpPoint.direction = node.direction; 
-	return HorizontalJump(jumpPoint, listToFill, parent);
+
+	// TODO 3: Really simple: if not found any forced neighbour, we just keep on jumping in the same direction as we are "coming from"
+	// You have to make sure to return what that jump returns us
+
 }
 
 void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, const PathNode* parent)
@@ -882,6 +772,8 @@ void j1PathFinding::VerticalJump(const PathNode & node, PathList& listToFill, co
 	visited.pathNodeList.push_back(jumpPoint);
 	// --- 
 
+	// If you are looking here before making the "T O D O's" numbers 2 and 3 you are cheating. 
+	// Check for forced neighbours
 	if (!IsWalkable(newPos + iPoint(1, 0)) && IsWalkable(newPos + iPoint(1, verticalDir)) && IsWalkable(newPos + node.direction))
 	{
 		jumpPoint.direction = { 1, verticalDir }; 
@@ -927,7 +819,7 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 	visited.pathNodeList.push_back(jumpPoint);
 	// --- 
 
-
+	// Checking for forced neighbours
 	if (!IsWalkable(newPos + iPoint(-horizontalDir, 0)) && IsWalkable(newPos + iPoint(-horizontalDir, verticalDir)) 
 		&& IsWalkable(newPos + iPoint(0,verticalDir)))
 	{
@@ -964,35 +856,18 @@ void j1PathFinding::DiagonalJump(const PathNode & node, PathList& listToFill, co
 	}
 
 
-	jumpPoint.direction = { horizontalDir, 0 };
-	HorizontalJump(jumpPoint, listToFill, parent);
-	if (listToFill.pathNodeList.empty() == false)
-	{
-		jumpPoint.direction = node.direction;
-		listToFill.pathNodeList.push_back(jumpPoint);
+	// TODO 4: Make an horizontal jump with the proper direction
+	// If it detected any forced neighbour, you have to add 
+	// to the list the remaining directions that we are looking for (as nodes)
+	// so they don't get lost. 
 
-		jumpPoint.direction = { 0, verticalDir};
-		listToFill.pathNodeList.push_back(jumpPoint);
-		return;
-	}
-	else
-	{
-		VerticalJump(PathNode(-1, -1, newPos, parent, { 0, verticalDir }), listToFill, parent);
-		if(listToFill.pathNodeList.empty() == false)
-		{
-		jumpPoint.direction = node.direction;
-		listToFill.pathNodeList.push_back(jumpPoint);
+	
+	// TODO 5: Make a vertical Jump with the proper direction if the Horizontal jump
+	// did not find any jumpPoints. Like before, make sure to add the remaining directions.
+	
 
-		jumpPoint.direction = { horizontalDir, 0 };
-		listToFill.pathNodeList.push_back(jumpPoint);
-		return;
-		}
-		else
-		{
-			jumpPoint.direction = node.direction;
-			return DiagonalJump(jumpPoint, listToFill, parent);
-		}
-	}
+	// TODO 6: If none of the past two jumps returned an interesting Point, make a diagonal Jump
+	// with the same direction as this one.
 	
 
 }

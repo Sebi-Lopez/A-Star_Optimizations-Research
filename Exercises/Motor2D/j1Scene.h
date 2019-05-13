@@ -37,7 +37,7 @@ private:
 	SDL_Texture* pathTex = nullptr;
 	uint32 pathTime; 
 	bool usingJPS = true; 
-	bool stepByStep = false; 
+	bool stepByStep = true; 
 };
 
 #endif // __j1SCENE_H__
