@@ -360,7 +360,21 @@ An example of this error is shown in this picture.
 If you can't see it properly, you can click on it to make it bigger. The blue arrow signals one node that is not on the path (it's not yellow) but it should be, as its impossible for the yellow node to the right get to the next node in the path, the yellow node to the left.
 
 
+### First Iteration
+Feels really sloppy that each node of the starting points has to start one by one. I think if it's made in a loop, not only will be visually more effective, but it will have more references to what nodes expand later, as the open list will be filled with other Jump Points. 
 
 
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG
+?raw=true" width="300">
+</p>
+
+### Corner traspassing
+Right now, the code that we have detect automatically a forced neighbour when it sees it. If we don't want the path to go through the corners of two tiles being diagonal to each other, we have to take that situation in account. 
+The solution is really simple, add one single condition more every time we check for a forced neighbour, that should only detect a forced neighbour when the three conditions take place.  
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample06.PNG?raw=true" width="200">
+</p>
 
 
