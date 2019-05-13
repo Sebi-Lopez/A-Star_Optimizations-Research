@@ -42,7 +42,7 @@ As mentioned, each cluster has information about its entries, its distances and 
 The usage of Swamps is another method that tries to avoid areas that are navigated unnecessary by heuristic methods like A*. It calculates zones this undesirable zones in pre-runtime. This way, avoid the expansion of the nodes in zones (that can get to be really big) in which we know the path won't pass. In fact, the path will only pass those zones if the end of the beginning of it is located in these zones. The picture below, extracted from the original [paper](http://leibniz.cs.huji.ac.il/tr/1188.pdf) shows the idea. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG?raw=true" width="200">
 </p>
 
 ## Portal Heuristic
@@ -69,7 +69,7 @@ How does it do it? Well, the concept that you have to stick to your head is Path
 His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png" width="340">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png?raw=true" width="340">
 </p>
 
 When talking about symmetric paths, the A* algorithm is forced to explore every node adjacent to the optimal path. In the past picture, depending on how we handle the situation of having two nodes with the same score, A* might even explore the whole map before reaching the destination. 
@@ -94,26 +94,26 @@ So I (again as a node) am trying to jump over the right direction (as my parent 
 I can assume these two nodes, above and below of my parent, don't need to go through me to get there (they can easily go through my parent). 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample02.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample02.PNG?raw=true" width="200">
 </p>
 
 As well, I can assume that the nodes avobe and below me, are optimally obtained going through my parent diagonal (as its moving distance  is √2 and going through me the distance would be 2). 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample03.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample03.PNG?raw=true" width="200">
 </p>
 
 To get to the nodes diagonally more to the right of me, the optimal path can go through me, but as well, it can go through the two nodes that we just discarded, as the path is symmetric. We are going to assume, that that is the correct path to go (you will see why later).
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample04.PNG" width="250">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample04.PNG?raw=true" width="250">
 </p>
 
 So now, we only have one direction to go, as all the others will be explored and analyzed by other jumps. So I will keep jumping nodes horizontally to the right, until I encounter with a wall. Then my jump will be over and I can guarantee that there are no interesting points that need to pass through that row of nodes, so we can "discard" the whole row. 
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample07.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample07.PNG?raw=true" width="200">
 </p>
 
 There's a trick. What happens when the nodes that I assumed that will be analyzed by other jumps, are blocked? Then takes place what it's called a Forced Neighbour. I have, then, to keep that in mind add myself as a JumpPoint in the open list. A Jump Point is a node that is interesting to look at, and it has this name because we can directly go to that node, ignoring all the others in the way, as they secured that there are no more interesting points to look at there. 
@@ -122,7 +122,7 @@ As i mentioned before, we only stop when we find an obstacle, but now that we kn
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample06.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningHorizontalExample06.PNG?raw=true" width="200">
 </p>
 
 
@@ -136,39 +136,38 @@ For the diagonal jumps we make similar assumptions as with the horizontal and ve
 
 If I go, let's say in this direction. 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG?raw=true" width="200">
 </p>
 
 I can assume that the nodes above and to the right of my parent are reached better through it rather than going through me. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample02.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample02.PNG?raw=true" width="200">
 </p>
 
 These two nodes in my corners are, as well, reached more optimally through my parent. As going through me it would suppose a movement of 2√2 and going through my parent it would be only 2. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample03.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample03.PNG?raw=true" width="200">
 </p>
 
 So now I am left with these three directions, that are all "ahead" of me. How do I prune all these directions? 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample04.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample04.PNG?raw=true" width="200">
 </p>
 
 
 Here comes the trick: for each node that we are jumping over diagonally, before we move on to the next diagonal node, I have to prune the vertical and horizontal directions.  So, when I am doing a diagonal jump, I first jump horizontally do the right (in this case). If this jump doesn't returns me a Jump Point, i can safely discard that row, and I proceed to do a vertical jump. Again if this jump doesn't tell me that there is a Jump Point in that row, I can discard it safely. That's almost the main part of these jumping methods, as it expands in all the possible directions doing this method, as shown in the image below. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG
-" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG?raw=true" width="200">
 </p>
 
 Now, let's not forget, that we are assuming, when doing all this, that the rows that we assumed that are free and that some other path will go through them, may have an obsticle in their way. In this case, as with the horizontal and vertical jumps, we have a Jump Point. So I have to add myself to the open list, to be analyzed later on. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample05.PNG?raw=true" width="200">
 </p>
 
 Like in the horizontal and vertical jumps, the jump ends either when we find a Jump Point (either via vertical or horizontal jump or our forced neighbours) or when we find with an obstacle (meaning that we can not jump any further). 
@@ -193,7 +192,7 @@ n to the set of successors for x, we try to “jump” to a node that is further
 That is something that I thought that would not be very efficient. Instead, the intention was to only expand to the direction that I am going. Not only the vector of the direction, more like the zone towards I'm going and not go back to nodes that have already been analyzed. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/exampleOfExpansion.PNG" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/exampleOfExpansion.PNG?raw=true" width="200">
 </p>
 
 As shown in the image above, the JPS algorythm would explain through all these directions, taking the directions between the jumpoint and its walkable adjacents (except the one below, because there's an obstacle). My intention is to only expand towards the green arrows, and ignore the rest. 
@@ -223,11 +222,11 @@ To accomplish that, I made
  RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png" width="340">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png?raw=true" width="340">
 </p>
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png" width="340">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png?raw=true" width="340">
 </p>
 
 
