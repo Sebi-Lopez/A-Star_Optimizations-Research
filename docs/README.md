@@ -192,23 +192,11 @@ I missunderstood the iteration of the JPS initally, and when the pruning methods
 ## Exercises
 ### TODO 0: 
 "Add 8 different starting nodes, with the 8 possible directions to the open list."
-To start things off, we need to be able to expand in all the possible directions. 
+To start things off, we need to be able to expand in all the possible directions. If we add the horizontal directions the last ones, we will be able to see the progress once we are done with TODO's 2 and 3. 
 
 - Solution
 
 ```cpp
-// Horizontal Cases
-// East
-open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
-// West
-open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
-
-// VERTICAL CASES 
-// North
-open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
-// South
-open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
-
 // DIAGONAL CASES 
 // North - East
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
@@ -219,6 +207,18 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 // North - West
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
+// VERTICAL CASES 
+// North
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
+// South
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
+
+// HORIZONTAL CASES 
+// East
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
+// West
+open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
+
 ```   
 
 ### TODO 1: 
@@ -228,7 +228,7 @@ As mentioned before, this algorythm only changes this from the actual A*, it pru
 
 - Solution
 ```
-			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
 ```
 
 ### TODO 2:
@@ -239,40 +239,120 @@ The last part is important, as when we find a Jump Point, if we simply add it to
 - Solution 
 ```
 if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
-	{
-		jumpPoint.direction = { horizontalDir, 1 }; 
-		listToFill.pathNodeList.push_back(jumpPoint);
-	}
+{
+	jumpPoint.direction = { horizontalDir, 1 }; 
+	listToFill.pathNodeList.push_back(jumpPoint);
+}
 
-	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
-	{
-		jumpPoint.direction = { horizontalDir, -1 }; 
-		listToFill.pathNodeList.push_back(jumpPoint);
-	}
+if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
+{
+	jumpPoint.direction = { horizontalDir, -1 }; 
+	listToFill.pathNodeList.push_back(jumpPoint);
+}
 
-	if (listToFill.pathNodeList.empty() == false)
-	{
-		jumpPoint.direction = node.direction;
-		listToFill.pathNodeList.push_back(jumpPoint);
-		return;
-	}
+if (listToFill.pathNodeList.empty() == false)
+{
+	jumpPoint.direction = node.direction;
+	listToFill.pathNodeList.push_back(jumpPoint);
+	return;
+}
+```
+### TODO 3: 
+"Really simple: if not found any forced neighbour, we just keep on jumping in the same direction as we are "coming from". You have to make sure to return what that jump returns us."
+
+This is a recursive call to the same function. While we don't find any interesting points (Forced Neighbours or goal), we will keep calling this function until one of those pops up. 
+
+- Solution
+```
+jumpPoint.direction = node.direction; 
+return HorizontalJump(jumpPoint, listToFill, parent);
 ```
 
+Once we've got to this point we should be able to see how both horizontal and vertical jumps are made, and can properly detect if there is a Forced Neighbour. 
 
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/TODOS/TODO%203%20-%20Middle%20Step.PNG?raw=true" width="250">
+</p>
 
-
-### TODO 3: 
 
 ### TODO 4: 
 
+"Make an horizontal jump with the proper direction. If it detected any forced neighbour, you have to add to the list the remaining directions that we are looking for (as nodes), so they don't get lost. 
+
+As mentioned before, the diagonal jump, makes first horizontal and vertical jump, before jumping over to the next node. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/iteration.PNG?raw=true" width="400">
+</p>
+
+- Solution 
+
+```
+jumpPoint.direction = { horizontalDir, 0 };
+HorizontalJump(jumpPoint, listToFill, parent);
+if (listToFill.pathNodeList.empty() == false)
+{
+	jumpPoint.direction = node.direction;
+	listToFill.pathNodeList.push_back(jumpPoint);
+
+	jumpPoint.direction = { 0, verticalDir};
+	listToFill.pathNodeList.push_back(jumpPoint);
+	return;
+}
+```
+
+
 ### TODO 5: 
+"Make a vertical Jump with the proper direction if the Horizontal jump did not find any jumpPoints. Like before, make sure to add the remaining directions."
+
+Same concept as TODO 4. 
+- Solution 
+
+```
+else
+{
+jumpPoint.direction = { 0, verticalDir };
+VerticalJump(jumpPoint, listToFill, parent);
+if(listToFill.pathNodeList.empty() == false)
+{
+jumpPoint.direction = node.direction;
+listToFill.pathNodeList.push_back(jumpPoint);
+
+jumpPoint.direction = { horizontalDir, 0 };
+listToFill.pathNodeList.push_back(jumpPoint);
+return;
+}
+```
+
 
 ### TODO 6: 
+"If none of the past two jumps returned an interesting Point, make a diagonal Jump with the same direction as this one. "
+Similar to the TODO 3. It's the recursive call that will make the expansion iteration.
 
+- Solution 
+
+```
+else
+{
+jumpPoint.direction = node.direction;
+return DiagonalJump(jumpPoint, listToFill, parent);
+}
+```
+Now we should be able to expand properly to every direction and detect any forced neighbours correctly, like shown in the image below. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/TODOS/FinishedTodos.PNG?raw=true" width="400">
+</p>
 
 ## Improvements: 
-## Don't miss any nodes
+### Don't miss any nodes
+This implementation has some problems that are still unsolved due to lack of time. For example, some of the nodes that are made to reconstruct de path, are in the open list awaiting to be analyzed, but not in the closed one (from where we search the parents of the nodes and reconstruct the pat). 
 
+An example of this error is shown in this picture. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/iteration.PNG?raw=true" width="250">
+</p>
 
 
 
