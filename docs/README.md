@@ -28,23 +28,12 @@ This [article](https://gamedevelopment.tutsplus.com/tutorials/understanding-goal
 This method is really effective when we want a larger number of entities demanding path to that goal. The author of the article 
 However, this algorythm is not very efficient when we have a larger map, as calculating the vector field can get really expensive because the number of nodes. Also, there needs to be another algorythm that needs to work 
 
-## Lifelong Planning A*
-
-
-## Theta*
-
-
-## ARA* (Anytime Repairing A*)
-
-
 ## HPA* 
 This algorithm has taken over the game industry. Is one of the most used in the present. 
 Hierarchical Path-Finding A* is a pathfinding method that abstracts any grid-map to different sets of "clusters" or "blocks" with different levels of abstraction. In their [paper](https://webdocs.cs.ualberta.ca/~mmueller/ps/hpastar.pdf) the creators use a metaphor with a car trip starting in one city and ending in a city in another country (both points with its respective addresses). Us, humans, can abstract the path we are going to take really well. We first look to get into a highway, then move from one state to another, and when we get to the destination city or state, we search at the "city level", within its streets and roundabouts. This method follows this abstraction principle. 
 
 As mentioned, each cluster has information about its entries, its distances and costs. So travelling at "city level" can get very efficient. These clusters are made a clustering algorithm that groups neighbours together when appropriate. Therefore, there's no need for, let's say, the designer of the map, to add extra data when creating the map, as this algorithm makes the abstraction zones by itself. Consequently, this method doesn't have any problem to be added to a procedurally generated map.
 
-
-## IDA* 
 
 ## Swamps
 
