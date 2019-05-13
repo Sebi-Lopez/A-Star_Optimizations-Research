@@ -1,6 +1,7 @@
 # Introduction
 I am [Sebastià López Tenorio](https://github.com/Sebi-Lopez), student of the [Bachelor’s Degree in Video Games by UPC at CITM](https://www.citm.upc.edu/ing/estudis/graus-videojocs/). This content is generated for the second year’s subject Project 2, under the supervision of lecturer [Ricard Pillosu](https://es.linkedin.com/in/ricardpillosu)
 
+You can download the repository [here](https://github.com/Sebi-Lopez/A-Star_Optimizations-Research). 
 # Current Position
 
 In videogames, the use of a pathfinding algorithm is crucial when dealing with all sorts of movements. 
@@ -10,8 +11,6 @@ It's for this reason we are going to find a way we can improve this algorithm.
 
 # Possible Optimizations
 There are lots of possibilities to optimize the A* each one with its pros and cons. I'm not going to go through all of them, but I'm going to try to briefly explain the main mechanics of some that I found interesting to take a look at. 
-
-## Parallel Search
 
 
 ## Potential Fields
@@ -47,8 +46,6 @@ As mentioned, each cluster has information about its entries, its distances and 
 
 ## IDA* 
 
-## Dead End Detection
-## Dead End Heuristics
 ## Swamps
 
 The usage of Swamps is another method that tries to avoid areas that are navigated unnecessary by heuristic methods like A*. It calculates zones this undesirable zones in pre-runtime. This way, avoid the expansion of the nodes in zones (that can get to be really big) in which we know the path won't pass. In fact, the path will only pass those zones if the end of the beginning of it is located in these zones. The picture below, extracted from the original [paper](http://leibniz.cs.huji.ac.il/tr/1188.pdf) shows the idea. 
@@ -56,11 +53,6 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG?raw=true" width="200">
 </p>
-
-## Portal Heuristic
-
-
-
 
 
 # Selected Approach: JPS
@@ -192,28 +184,39 @@ The A* takes the lowest node in his open list and finds all his walkable adjacen
 
 This is the only thing that changes the JPS in the A* method. Once we have done this, we are all set. 
 
-## My take on it
-
-I implemented the JPS as explained in its [paper](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf), but before that I took a look at this [site](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that introduced an idea that I could not get off my mind. 
-
-With the JPS, for every node that we analyze in the open list, we jump in every possible direction (as we jump towards every walkable adjacent). As mentioned in the creators paper: 
-
-"We start with the pruned set of neighbours immediately adjacent to the current node x. Then, instead of adding each neighbour
-n to the set of successors for x, we try to “jump” to a node that is further away but which lies in the same relative direction to x as n" [Online Graph Pruning for Pathfinding on Grid Maps](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) (Daniel Harabor and Alaban Grastien, 2011).  
-
-That is something that I thought that would not be very efficient. Instead, the intention was to only expand to the direction that I am going. Not only the vector of the direction, more like the zone towards I'm going and not go back to nodes that have already been analyzed. 
-
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/exampleOfExpansion.PNG?raw=true" width="200">
-</p>
-
-As shown in the image above, the JPS algorythm would explain through all these directions, taking the directions between the jumpoint and its walkable adjacents (except the one below, because there's an obstacle). My intention is to only expand towards the green arrows, and ignore the rest. 
-
 ## Implementation
 
-To accomplish that, I made 
+### Disclaimer 
+I missunderstood the iteration of the JPS initally, and when the pruning methods where applied to each node. That's why I decided to work in another I've recently discovered that many of the things I did were done faster and better with the JPS, as expected. 
+
 
 ## Exercises
+### TODO 0: 
+"Add 8 different starting nodes, with the 8 possible directions to the open list."
+To start things off, we need to be able to expand in all the possible directions. 
+<// Horizontal Cases
+
+	// East
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1,0 }));
+	// West
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1,0 }));
+	
+	// VERTICAL CASES 
+	// North
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, 1 }));
+	// South
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 0, -1 }));
+
+	// DIAGONAL CASES 
+	// North - East
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, 1 }));
+	// South - East
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { 1, -1 }));
+	// South - West
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, -1 }));
+	// North - West
+	open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));>
+
 ### TODO 1: 
 
 ###TODO 2: 
