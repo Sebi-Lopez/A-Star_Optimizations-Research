@@ -365,8 +365,7 @@ Feels really sloppy that each node of the starting points has to start one by on
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG
-?raw=true" width="300">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Strategy.PNG?raw=true" width="300">
 </p>
 
 ### Corner traspassing
