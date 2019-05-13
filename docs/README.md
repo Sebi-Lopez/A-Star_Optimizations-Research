@@ -38,8 +38,12 @@ As mentioned, each cluster has information about its entries, its distances and 
 ## Dead End Detection
 ## Dead End Heuristics
 ## Swamps
-El uso de pantanos es otra posible optimizacion que intenta evitar areas que son navegadas i extendidas innecesariamente. De esta forma, evitan la propagacion por zonas (que pueden llegar a ser muy grandes) en las cuales sabemos que el path optimo no cruzarà. 
-The usage of Swamps is another method that tries to avoid areas that are navigated unnecessary by heuristic methods like A*. It calculates zones this undesirable zones in pre-runtime. This way, avoid the expansion of the nodes in zones (that can get to be really big) in which we know the path won't pass. In fact, the path will only pass those zones if the end of the beginning of it is located in these zones. 
+
+The usage of Swamps is another method that tries to avoid areas that are navigated unnecessary by heuristic methods like A*. It calculates zones this undesirable zones in pre-runtime. This way, avoid the expansion of the nodes in zones (that can get to be really big) in which we know the path won't pass. In fact, the path will only pass those zones if the end of the beginning of it is located in these zones. The picture below, extracted from the original [paper](http://leibniz.cs.huji.ac.il/tr/1188.pdf) shows the idea. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG" width="200">
+</p>
 
 ## Portal Heuristic
 
@@ -179,12 +183,12 @@ This is the only thing that changes the JPS in the A* method. Once we have done 
 
 I implemented the JPS as explained in its [paper](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf), but before that I took a look at this [site](https://www.gamedev.net/articles/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/) that introduced an idea that I could not get off my mind. 
 
-With the JPS, for every node that we analyze in the open list, we jump in every possible direction (as we jump towards every walkable adjacent). As mentioned in its paper: 
+With the JPS, for every node that we analyze in the open list, we jump in every possible direction (as we jump towards every walkable adjacent). As mentioned in the creators paper: 
 
 "We start with the pruned set of neighbours immediately adjacent to the current node x. Then, instead of adding each neighbour
-n to the set of successors for x, we try to “jump” to a node that is further away but which lies in the same relative direction to x as n" [Online Graph Pruning for Pathfinding on Grid Maps](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf)(Daniel Harabor and Alaban Grastien, 2011).  
+n to the set of successors for x, we try to “jump” to a node that is further away but which lies in the same relative direction to x as n" [Online Graph Pruning for Pathfinding on Grid Maps](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) (Daniel Harabor and Alaban Grastien, 2011).  
 
-That is something that I thought that would not be very efficient. Instead, my intention was to only expand to the direction that I am going. Not only the vector of the direction, more like the zone towards I'm going and not go back to nodes that have already been analyzed. 
+That is something that I thought that would not be very efficient. Instead, the intention was to only expand to the direction that I am going. Not only the vector of the direction, more like the zone towards I'm going and not go back to nodes that have already been analyzed. 
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/exampleOfExpansion.PNG" width="200">
