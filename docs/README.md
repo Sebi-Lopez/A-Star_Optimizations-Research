@@ -237,6 +237,7 @@ PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back(
 The last part is important, as when we find a Jump Point, if we simply add it to the open list, we will be discarding a lot of nodes, because the jump in that direction is not finished. We complete the propagation by adding the different directions that haven't been jumped to yet. 
 
 - Solution 
+
 ```
 if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
 {
@@ -257,12 +258,14 @@ if (listToFill.pathNodeList.empty() == false)
 	return;
 }
 ```
+
 ### TODO 3: 
 "Really simple: if not found any forced neighbour, we just keep on jumping in the same direction as we are "coming from". You have to make sure to return what that jump returns us."
 
 This is a recursive call to the same function. While we don't find any interesting points (Forced Neighbours or goal), we will keep calling this function until one of those pops up. 
 
 - Solution
+
 ```
 jumpPoint.direction = node.direction; 
 return HorizontalJump(jumpPoint, listToFill, parent);
