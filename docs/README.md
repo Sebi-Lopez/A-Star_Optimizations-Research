@@ -196,9 +196,6 @@ To start things off, we need to be able to expand in all the possible directions
 
 - Solution
 
-### TODO 1: 
-"Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
-
 ```cpp
 // Horizontal Cases
 // East
@@ -222,10 +219,47 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 // North - West
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
-```    
+```   
+
+### TODO 1: 
+"Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
+
+As mentioned before, this algorythm only changes this from the actual A*, it prunes the neighbours before actually putting them to the open list. 
+
+- Solution
+```
+			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+```
+
+### TODO 2:
+"Find any possible forced neighbour for an horizontal Jump. When we find one, we have to add it to the list to make sure its analyzed later on (with the proper direction), and we exit. Also before we exit, don't forget to add the current propagation (as a node), so it can be completed and not forgotten"
+
+The last part is important, as when we find a Jump Point, if we simply add it to the open list, we will be discarding a lot of nodes, because the jump in that direction is not finished. We complete the propagation by adding the different directions that haven't been jumped to yet. 
+
+- Solution 
+```
+if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
+	{
+		jumpPoint.direction = { horizontalDir, 1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
+	}
+
+	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
+	{
+		jumpPoint.direction = { horizontalDir, -1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
+	}
+
+	if (listToFill.pathNodeList.empty() == false)
+	{
+		jumpPoint.direction = node.direction;
+		listToFill.pathNodeList.push_back(jumpPoint);
+		return;
+	}
+```
 
 
-###TODO 2: 
+
 
 ### TODO 3: 
 
