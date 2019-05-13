@@ -19,7 +19,7 @@ There are lots of possibilities to optimize the A* each one with its pros and co
 
 
 <p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/VectorFields/vectorField2.png?raw=true" width="200">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/VectorFields/vectorField2.png?raw=true" width="400">
 </p>
 
 
@@ -28,23 +28,12 @@ This [article](https://gamedevelopment.tutsplus.com/tutorials/understanding-goal
 This method is really effective when we want a larger number of entities demanding path to that goal. The author of the article 
 However, this algorythm is not very efficient when we have a larger map, as calculating the vector field can get really expensive because the number of nodes. Also, there needs to be another algorythm that needs to work 
 
-## Lifelong Planning A*
-
-
-## Theta*
-
-
-## ARA* (Anytime Repairing A*)
-
-
 ## HPA* 
 This algorithm has taken over the game industry. Is one of the most used in the present. 
 Hierarchical Path-Finding A* is a pathfinding method that abstracts any grid-map to different sets of "clusters" or "blocks" with different levels of abstraction. In their [paper](https://webdocs.cs.ualberta.ca/~mmueller/ps/hpastar.pdf) the creators use a metaphor with a car trip starting in one city and ending in a city in another country (both points with its respective addresses). Us, humans, can abstract the path we are going to take really well. We first look to get into a highway, then move from one state to another, and when we get to the destination city or state, we search at the "city level", within its streets and roundabouts. This method follows this abstraction principle. 
 
 As mentioned, each cluster has information about its entries, its distances and costs. So travelling at "city level" can get very efficient. These clusters are made a clustering algorithm that groups neighbours together when appropriate. Therefore, there's no need for, let's say, the designer of the map, to add extra data when creating the map, as this algorithm makes the abstraction zones by itself. Consequently, this method doesn't have any problem to be added to a procedurally generated map.
 
-
-## IDA* 
 
 ## Swamps
 
@@ -54,6 +43,16 @@ The usage of Swamps is another method that tries to avoid areas that are navigat
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/Swamps/swampExample.PNG?raw=true" width="200">
 </p>
 
+## RSR
+ RSR or [Rectangular Symmetry Reduction](http://aigamedev.com/open/tutorial/symmetry-in-pathfinding/#2RectangularSymmetryReduction) is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as the author claims, can make a huge impact in the pathfinding speed. 
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png?raw=true" width="340">
+</p>
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png?raw=true" width="340">
+</p>
 
 # Selected Approach: JPS
 The  [Jump Point Search](http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf) is an algorithm build upon A* pathfinding algorithm and works in uniform-cost grid maps. It requires no preprocessing nor occupies memory (unlike most of the other optimizations) and it's compatible with other improving technics like abstraction.
@@ -70,7 +69,7 @@ Its main purpose is to reduce the number of nodes in the open list of the A*. Th
 How does it do it? Well, the concept that you have to stick to your head is Path Symmetry.  
 
 ### Path Symmetry
-His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the path symmetry. The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
+His creator, Daniel Harabor, has made an incredible optimization of the A* by exploiting the [path symmetry](http://aigamedev.com/open/tutorial/symmetry-in-pathfinding/#1PathSymmetries). The idea is that the A* algorithm looks through lots of similar paths that are symmetric, most of all in larger and open spaces. As you can see in the picture below, all those paths are equivalent when we talk about efficiency.  The only difference between one and another is which direction you take first. At the end of the day, you will do the same movements, in a different order.
 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/FPSB_symmetry.png?raw=true" width="340">
@@ -197,9 +196,6 @@ To start things off, we need to be able to expand in all the possible directions
 
 - Solution
 
-### TODO 1: 
-"Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
-
 ```cpp
 // Horizontal Cases
 // East
@@ -223,10 +219,47 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 // North - West
 open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, nullptr, { -1, 1 }));
 
-```    
+```   
+
+### TODO 1: 
+"Fill the nieghbours list with the pruned neighbours. Keep in mind that we do the same like in A*, only that we prune before adding elements. It's a single line."
+
+As mentioned before, this algorythm only changes this from the actual A*, it prunes the neighbours before actually putting them to the open list. 
+
+- Solution
+```
+			PruneAdjacents(closed.pathNodeList.back(), neighbors, &closed.pathNodeList.back());
+```
+
+### TODO 2:
+"Find any possible forced neighbour for an horizontal Jump. When we find one, we have to add it to the list to make sure its analyzed later on (with the proper direction), and we exit. Also before we exit, don't forget to add the current propagation (as a node), so it can be completed and not forgotten"
+
+The last part is important, as when we find a Jump Point, if we simply add it to the open list, we will be discarding a lot of nodes, because the jump in that direction is not finished. We complete the propagation by adding the different directions that haven't been jumped to yet. 
+
+- Solution 
+```
+if (!IsWalkable(newPos + iPoint(0, 1)) && IsWalkable(newPos + iPoint(horizontalDir, 1)) && IsWalkable(newPos + node.direction))
+	{
+		jumpPoint.direction = { horizontalDir, 1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
+	}
+
+	if (!IsWalkable(newPos + iPoint(0, -1)) && IsWalkable(newPos + iPoint(horizontalDir, -1)) && IsWalkable(newPos + node.direction))
+	{
+		jumpPoint.direction = { horizontalDir, -1 }; 
+		listToFill.pathNodeList.push_back(jumpPoint);
+	}
+
+	if (listToFill.pathNodeList.empty() == false)
+	{
+		jumpPoint.direction = node.direction;
+		listToFill.pathNodeList.push_back(jumpPoint);
+		return;
+	}
+```
 
 
-###TODO 2: 
+
 
 ### TODO 3: 
 
@@ -240,15 +273,6 @@ open.pathNodeList.push_back(PathNode(0, origin.DistanceManhattan(goal), origin, 
 ## Improvements: 
 ## Don't miss any nodes
 
-## RSR
- RSR or Rectangular Symmetry Reduction is another pre-processing algorithm that avoids path symmetries by dividing the map grid into different rectangles. The idea is to dodge path symmetry by avoiding all the centre nodes in those rectangles, and only expanding nodes from the perimeters of each rectangle. It's created by Don Harabor as well, the creator of JPS. The combination of these two methods, as he shows in his paper, can speed up the search by. 
 
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_decomposition.png?raw=true" width="340">
-</p>
-
-<p align="center">
-<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/RSR/rsr_insertion.png?raw=true" width="340">
-</p>
 
 
