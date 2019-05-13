@@ -80,7 +80,7 @@ The principal idea is that there is no need to explore every possible path (sinc
 Another way to look at what it does is saying that each jump, tries to "prove" that exists another path to the goal that is equally optimal (symmetric) and doesn't pass through certain nodes. Is a bit twisted, but you'll see it clearer now. 
 
 ## Pruning Rules
-There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps (horizontal and vertical) and diagonal jumps.
+There are two main rules for pruning. These two are separated only by the direction of the jump we are trying to make. We differentiate between straight jumps (horizontal and vertical) and diagonal jumps. This [website](https://zerowidth.com/2013/05/05/jump-point-search-explained.html) helped me understand this concept, and I inspired this segment's explanation in it.
 
 To discard the major number of nodes that we are not interested, we are going to look at it through the perspective, am I (as the node) really needed to be on the final path. To prove so, we are going to make sure, that there is no other "interesting" point that needs to be analyzed that forces the path to go through me (because I am part of the optimal path to get to that node). We will talk about this interesting nodes after explaining the jumps. 
 
@@ -134,7 +134,7 @@ These conditions of encountering forced neighbours are applied in a very similar
 
 For the diagonal jumps we make similar assumptions as with the horizontal and vertical jumps to find Jump Points. Also, it has a peculiarity in its expansion, that I am going to explain a bit further. 
 
-If I go, let's say in this direction. 
+If I go, let's say in this direction, 
 <p align="center">
 <img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/JPS/Prunning%20Examples/pruningDiagonalExample01.PNG?raw=true" width="200">
 </p>
