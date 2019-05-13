@@ -16,6 +16,18 @@ There are lots of possibilities to optimize the A* each one with its pros and co
 
 ## Potential Fields
 
+[Potential fields](http://aigamedev.com/open/tutorials/potential-fields/) are a goal based pathfinding algorythm that consists in finding "every possible" path to the goal. As the name suggests, the focus is on the goal position, and expand the pathfinding algorithm from it. Eventually, it will found the shortest path to the goal for every node on the map. In every node, there will be an orientation, that indicates the direction following this optimal path. The unit that wants to go to the goal, will only have to refer to that and, and follow its vector, to get closer to the goal.
+
+
+<p align="center">
+<img src="https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/blob/master/docs/images/VectorFields/vectorField2.png?raw=true" width="200">
+</p>
+
+
+This [article](https://gamedevelopment.tutsplus.com/tutorials/understanding-goal-based-vector-field-pathfinding--gamedev-9007) explains it, with a explanation [video](https://www.youtube.com/watch?v=Bspb9g9nTto). 
+
+This method is really effective when we want a larger number of entities demanding path to that goal. The author of the article 
+However, this algorythm is not very efficient when we have a larger map, as calculating the vector field can get really expensive because the number of nodes. Also, there needs to be another algorythm that needs to work 
 
 ## Lifelong Planning A*
 
