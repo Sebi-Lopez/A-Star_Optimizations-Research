@@ -5,8 +5,13 @@ I am [Sebastià López Tenorio](https://github.com/Sebi-Lopez), student of the [
 # Debugging Options 
 
 F1 – CHANGE ALGORYTHM
+
 F2 – SHOW DEBUG TILES
+
 F3 – TOGGLE STEP BY STEP 
+
 Z – ZOOM IN / ZOOM OUT
+
 S - STEPS
+
 SPACE – FAST FORWARD STEPS
