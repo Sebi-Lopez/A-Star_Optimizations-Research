@@ -1,7 +1,7 @@
 # Introduction
 I am [Sebastià López Tenorio](https://github.com/Sebi-Lopez), student of the [Bachelor’s Degree in Video Games by UPC at CITM](https://www.citm.upc.edu/ing/estudis/graus-videojocs/). This content is generated for the second year’s subject Project 2, under the supervision of lecturer [Ricard Pillosu](https://es.linkedin.com/in/ricardpillosu)
 
-You can download the repository [here](https://github.com/Sebi-Lopez/A-Star_Optimizations-Research). 
+You can download the exercices and the solution of the project [here](https://github.com/Sebi-Lopez/A-Star_Optimizations-Research/releases). 
 # Current Position
 
 In videogames, the use of a pathfinding algorithm is crucial when dealing with all sorts of movements. 
